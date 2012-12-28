@@ -1,0 +1,68 @@
+{% extends "global.html" %}
+{% block htmlhead %}
+<script type="text/javascript" src="{{ static_url("scripts/plugins/arrow.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/plugins/chat.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/path.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/buildings.css") }}" />
+<script>
+$(function(){
+	$("#right-chat-msg-list").scrollTop(document.getElementById('right-chat-msg-list').scrollHeight);
+});
+</script>
+{% end %}
+{%block content %}
+<div id="maps">
+	<div id="map" class="map">
+		<div class="road-middle road" id="road-middle-bg"></div>
+		{% if not path[0] == 'None' and not path[0] == '' and not path[0] == '0' %}
+		<div id="road-north" class="road">
+			{% if not link[0] == 'None' and not link[0] == '' and not link[0] == '0' %}
+			<a href="#/map/{{ link[0] }}" class="arrow arrow_n hash-btn" id="arrow_n" ></a>
+			{% end %}
+		</div>
+		{% end %}
+		
+		{% if not path[1] == 'None' and not path[1] == '' and not path[1] == '0' %}
+		<div id="road-east" class="road">
+			{% if not link[1] == 'None' and not link[1] == '' and not link[1] == '0' %}
+			<a href="#/map/{{ link[1] }}" class="arrow arrow_e hash-btn" id="arrow_e" ></a>
+			{% end %}
+		</div>
+		{% end %}
+		
+		{% if not path[2] == 'None' and not path[2] == '' and not path[2] == '0' %}
+		<div id="road-south" class="road">
+			{% if not link[2] == 'None' and not link[2] == '' and not link[2] == '0' %}
+			<a href="#/map/{{ link[2] }}" class="arrow arrow_s hash-btn" id="arrow_s" ></a>
+			{%end%}
+		</div>
+		{% end %}
+		
+		{% if not path[3] == 'None' and not path[3] == '' and not path[3] == '0' %}
+		<div id="road-west" class="road">
+			{% if not link[3] == 'None' and not link[3] == '' and not link[3] == '0' %}
+			<a href="#/map/{{ link[3] }}" class="arrow arrow_w hash-btn" id="arrow_w" ></a>
+			{%end%}
+		</div>
+		{% end %}
+		
+		<div class="road-middle road" id="road-middle-shadow"></div>
+		
+		<!-- buildingss' information -->
+		{% for i in range(14) %}
+			{% if buildings[i] %}
+		<div id="buildings-{{i+1}}" class="buildings color-{{buildings[i]['color']}}" title="{{buildings[i]['title']}}">
+			<div class="house-shadow"></div>
+			<a href="#/{{buildings[i]['special']}}{% if buildings[i]['special'] in special %}/{{buildings[i]['id']}}{% end %}" class="building-btn hash-btn" >
+				<div class="house-roof"></div>
+				<div class="house-roof2"></div>
+				<div class="house-roof3"></div>
+				<div class="house-title">{{buildings[i]['title']}} {% if buildings[i]['special'] in ['rent'] %}出租中{% end %}</div>
+				<div class="house-wall">{{buildings[i]['descr']}}</div>
+			</a>
+		</div>
+			{% end %}
+		{% end %}		
+	</div>
+</div>
+{% end %}

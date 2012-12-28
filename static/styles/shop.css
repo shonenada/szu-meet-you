@@ -1,0 +1,15 @@
+@CHARSET "UTF-8";
+
+.roomsite-block-nav li{
+	font-size:12px;
+	border-bottom:1px dashed #000;
+	padding:10px 0px 0px 20px;
+	margin-bottom:0px;
+}
+
+.shop-private-nav li{
+	font-size:16px;
+	border-bottom:1px dashed #000;
+	padding:10px 0px 5px 20px;
+	margin-bottom:0px;
+}

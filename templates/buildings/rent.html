@@ -1,0 +1,92 @@
+{% extends "../global.html" %}
+{% block htmlhead %}
+<script type="text/javascript" src="{{ static_url("scripts/plugins/arrow.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/building/rent.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/path.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/buildings.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/room.css") }}" />
+{% end %}
+{%block content %}
+
+<div id="maps">
+	<div id="map" class="map">
+		<div id="rent" class="room-bg">
+			<div class="leave" id="quit">
+				出门<a href="#/office" id="btn-leave" title="出门" alt="出门"></a>
+			</div>
+		</div>
+		
+		<div id="roomsite" class="room-hide">
+			<div id="room-sitemaster" class="room-hide">
+
+				<div class="roomsite-title">
+					{{ house.title }}
+				</div>
+
+				<div class="roomsite-content">
+
+					<div class="roomsite-block">
+
+						<div class="roomsite-block-nav">
+							<ul>
+								<a href="#id:1" class="roomsite-btn"><li>租赁条款</li></a>
+								<a href="#id:2" class="roomsite-btn"><li>租用店铺</li></a>
+							</ul>
+						</div>
+
+						<div class="roomsite-block-container">
+
+							<div class="roomsite-block-content-1 roomsite-block-content">
+							<h4>租赁条款</h4>
+							
+							</div>
+
+							<div class="roomsite-block-content-2 roomsite-block-content">
+							    <h4>租用店铺</h4>
+                                <form id="rent-form" class="form-horizontal">
+                                	<input type="hidden" value="{{ house.id }}" name="shopid" />
+							    	{{ xsrf_form_html() }}
+    								<div class="control-group">
+								        <label class="control-label" for="shopName">店铺名称</label>
+									    <div class="controls">
+										<input type="text" id="shopName" required placeholder="店铺名称" value="{{ house.title }}" required name="shopName">
+   										<span class="help-inline">* 您的店铺名称</span>
+									    </div>
+								    </div>
+											
+								    <div class="control-group">
+    									<label class="control-label" >店铺类型</label>
+									    <div class="controls">
+    										<select name="type">
+										    {% for x in rentType %}
+                                                <option value="{{x['id']}}">{{x['name']}}</option>
+                                            {%end%}
+										    </select>
+									        <span class="help-inline">* 您的店铺类型</span>
+									    </div>
+								    </div>
+											    
+								    <div class="control-group">
+    									<label class="control-label" for="descr">店铺介绍</label>
+									    <div class="controls">
+    										<textarea id="descr" rows="5" class="span3" required name="descr" placeholder="店铺介绍"></textarea>
+										    <span class="help-inline">* 您的店铺的介绍</span>
+									    </div>
+								    </div>
+    
+								    <div class="control-group">
+    									<div class="controls">
+										    <input type="submit" class="btn btn-primary" value="租用店铺" />
+									    </div>
+								    </div>
+							    </form>
+						    </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% end %}
+{% block right %} {%end%}

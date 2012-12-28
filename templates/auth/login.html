@@ -1,0 +1,44 @@
+{% extends "../global.html" %}
+{% block htmlhead %}
+<script type="text/javascript" src="{{ static_url("scripts/auth/login.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/auth/auth.css") }}" />
+<!--[if !gt IE 9]>
+<style>
+#main{
+	background-color:#fff;
+}
+</style>
+<![endif]-->
+{% end %}
+{% block content %}
+<div id="main">
+	<form id="login-form" class="form-horizontal">
+		{{ xsrf_form_html() }}
+		<legend>基本资料</legend>
+		<div class="control-group">
+			<label class="control-label" for="inputUsername">邮箱</label>
+			<div class="controls">
+				<input type="email" id="inputUsername" placeholder="{{username}}" required name="username" >
+				<span class="help-inline">* 您的注册邮箱</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputPasswd">密码</label>
+			<div class="controls">
+				<input type="password" id="inputPasswd" placeholder="6~16位密码" minlength="6" = maxlength="16" value="" required name="password">
+				<span class="help-inline">* 6~16位的密码</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<div class="controls">
+				<input type="submit" class="btn btn-primary" value="登录" />
+				<input type="button" class="btn btn-alert" value="忘记密码" />
+			</div>
+		</div>
+		
+	</form>
+</div>
+{% end %}
+{% block right %} {%end%}

@@ -1,0 +1,70 @@
+{% extends "../global.html" %}
+{% block htmlhead %}
+
+<script type="text/javascript" src="{{ static_url("scripts/plugins/arrow.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/building/teach.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/path.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/buildings.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/room.css") }}" />
+
+{% end %}
+{%block content %}
+
+<div id="maps">
+	<div id="map" class="map">
+		<div id="shadow" class="shadow"></div>
+		<div id="office" class="room-bg">
+			<div class="leave" id="leave">
+				离开<a href="#/office" id="btn-leave" title="出门" alt="出门"></a>
+			</div>
+		</div>
+		
+		<div id="roomsite">
+			<div id="room-sitemaster">
+				<div class="roomsite-title">
+					教学楼
+				</div>
+				<div class="roomsite-content">
+					<div class="roomsite-block">
+						<div class="roomsite-block-nav beautiScoll">
+							<ul>
+								<a href="#id:1" class="roomsite-btn"><li>教学楼介绍</li></a>
+								{% if not classes == None %}
+								{% for x in classes %}
+								<a href="#classid:{{x['cid']}}" class="roomsite-btn teach-course"><li>{{x['classname']}}</li></a>
+								{% end %}
+								{% end %}
+							</ul>
+						</div>
+						<div class="roomsite-block-container">
+							<div class="roomsite-block-content-1 roomsite-block-content">
+							<h4>教学楼介绍</h4>
+							<p>深大觅友社区教学楼成立于2012年8月27日21点33分。<br /></p>
+							<p>深大觅友社区教学楼负责寻找与你拥有相同课程的同学，并提供交友的平台。</p>
+							</div>
+							{% for x in classes %}
+							<div class="roomsite-block-content-{{x['cid']}} roomsite-block-content beautiScoll">
+							<h4>{{x['classname']}}（{{x['classteacher']}}）</h4>
+							<div style="text-indent:0em;padding-left:4em;">
+								{% if x['college'] %}开课单位：<code>{{college_no[int(x['college'])]}}</code>&nbsp;{%end%}
+								{% if x['mark'] and x['sjd'] %}学分类型：<code>{{x['mark']}} {{x['sjd']}}</code>&nbsp;{%end%}
+								{% if x['checktype'] %}考核方式：<code>{{x['checktype']}}</code>&nbsp;{%end%}
+							<br />
+								{% if x['classroom'] %}课时教室：<code>{{x['classroom']}}</code>&nbsp;{%end%}
+                            </div>
+                            <p>
+					        <div id="classinfor-{{x['cid']}}" style="text-indent:0em;padding-left:2em;">
+							    <p>加载中....</p>
+							</div>
+						    </p>
+							</div>
+							{%end%}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% end %}
+{% block right %} {%end%}

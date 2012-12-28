@@ -1,0 +1,145 @@
+{% extends "../global.html" %}
+{% block htmlhead %}
+<script type="text/javascript" src="{{ static_url("scripts/account/profile.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/account/profile.css") }}" />
+<script>
+$(function() {
+	$( "#inputBirthday" ).datepicker({dateFormat:"yy-mm-dd"});
+});
+</script>
+<!--[if !gt IE 9]>
+<style>
+	#main{
+		background:#fff;
+	}
+</style>
+<![endif]-->
+{% end %}
+{% block content %}
+<div id="main">
+	<form id="profile-form" class="form-horizontal">
+		{{ xsrf_form_html() }}
+		<legend>基本资料</legend>
+		<div class="control-group">
+			<label class="control-label" for="inputEmail">邮箱</label>
+			<div class="controls">
+				<input type="text" id="inputEmail" value="{{user.username}}" disabled >
+				<span class="help-inline">* 您的注册邮箱</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputNickname">昵称</label>
+			<div class="controls">
+				<input type="text" id="inputNickname" placeholder="{{ user.nickname }}" value="{{ user.nickname }}" name="nickname">
+				<span class="help-inline">* 您在深大觅友社区的昵称</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputGender">性别</label>
+			<div class="controls">
+				<select name="gender" id="inputGender">
+					<option value="1" {% if user.gender == 1 %}selected="selected"{%end%}>男</option>
+					<option value="0" {% if user.gender == 0 %}selected="selected"{%end%}>女</option>
+				</select>
+				<span class="help-inline">* 您的性别</span>
+			</div>
+		</div>
+		
+		<legend>个人资料</legend>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputTruename">真实姓名</label>
+			<div class="controls">
+				<input type="text" id="inputTruename" placeholder="真实姓名" value="{% if user.truename %}{{ user.truename }}{% end %}" name="truename">
+				<span class="help-inline">您的真实姓名</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputBirthday">生日</label>
+			<div class="controls">
+				<input type="text" id="inputBirthday" placeholder="生日" value="{% if user.birthday %}{{ user.birthday }}{%else%}1992-1-1{% end %}" name="birthday">
+				<span class="help-inline">您的生日</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputNumber">学号</label>
+			<div class="controls">
+				<input type="text" id="inputNumber" placeholder="学号" value="{% if user.number %}{{ user.number }}{%end%}" name="number">
+				<span class="help-inline">您的深大学号</span>
+				<span class="help-block">觅友社区通过您的真实姓名与学号获得您的课表，<br />寻找与您有缘的同学，请务必真实填写</span>
+			</div>
+		</div>
+	
+		
+		<div class="control-group">
+			<label class="control-label" for="inputCollege">学院</label>
+			<div class="controls">
+				  <select name="college" >
+	                <option value="1" {% if user.college == 1 %}selected{%end%}>师范学院</option>
+	                <option value="2" {% if user.college == 2 %}selected{%end%}>文学院</option>
+	                <option value="3" {% if user.college == 3 %}selected{%end%}>外国语学院</option>
+	                <option value="4" {% if user.college == 4 %}selected{%end%}>传播学院</option>
+	                <option value="5" {% if user.college == 5 %}selected{%end%}>经济学院</option>
+	                <option value="6" {% if user.college == 6 %}selected{%end%}>管理学院</option>
+	                <option value="7" {% if user.college == 7 %}selected{%end%}>法学院</option>
+	                <option value="8" {% if user.college == 8 %}selected{%end%}>艺术设计学院</option>
+	                <option value="9" {% if user.college == 9 %}selected{%end%}>材料学院</option>
+	                <option value="10" {% if user.college == 10 %}selected{%end%}>物理科学与技术学院</option>
+	                <option value="11" {% if user.college == 11 %}selected{%end%}>化学与化工学院</option>
+	                <option value="12" {% if user.college == 12 %}selected{%end%}>数学与计算科学学院</option>
+	                <option value="13" {% if user.college == 13 %}selected{%end%}>信息工程学院</option>
+	                <option value="14" {% if user.college == 14 %}selected{%end%}>计算机与软件学院</option>
+	                <option value="15" {% if user.college == 15 %}selected{%end%}>建筑与城市规划学院</option>
+	                <option value="16" {% if user.college == 16 %}selected{%end%}>土木工程学院</option>
+	                <option value="17" {% if user.college == 17 %}selected{%end%}>机电与控制工程学院</option>
+	                <option value="18" {% if user.college == 18 %}selected{%end%}>电子科学与技术学院</option>
+	                <option value="19" {% if user.college == 19 %}selected{%end%}>生命科学学院</option>
+	                <option value="20" {% if user.college == 20 %}selected{%end%}>高尔夫学院</option>
+	                <option value="21" {% if user.college == 21 %}selected{%end%}>光电工程学院</option>
+	                <option value="22" {% if user.college == 22 %}selected{%end%}>医学院</option>
+	                <option value="23" {% if user.college == 23 %}selected{%end%}>成人教育学院</option>
+	                <option value="24" {% if user.college == 24 %}selected{%end%}>国际交流学院</option>
+                </select>
+				<span class="help-inline">您的学院</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputPhone">手机长号</label>
+			<div class="controls">
+				<input type="text" id="inputPhone" placeholder="手机长号" value="{% if user.phone %}{{ user.phone }}{%end%}" name="phone">
+				<span class="help-inline">您的手机长号</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputShort">手机短号</label>
+			<div class="controls">
+				<input type="text" id="inputShort" placeholder="手机短号" value="{% if user.shortPhone %}{{ user.shortPhone }}{%end%}" name="short">
+				<span class="help-inline">您的手机短号</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="inputQQ">QQ</label>
+			<div class="controls">
+				<input type="text" id="inputQQ" placeholder="QQ" value="{% if user.qq %}{{ user.qq }}{% end %}" name="qq">
+				<span class="help-inline">您的QQ号码</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<div class="controls">
+				<input type="submit" class="btn btn-primary" value="修改信息" />
+			</div>
+		</div>
+		
+	</form>
+</div>
+{% end %}
+
+{% block right %}{% end %}

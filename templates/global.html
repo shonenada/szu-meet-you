@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>{% block title %}深大觅友社区 - Meet You in Szu{% end %}</title>
+<script type="text/javascript" src="{{ static_url("scripts/jQuery/jquery-1.7.2.min.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/plugins/bootstrap.min.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/jQuery/jquery.tools.min.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/jQuery/jquery.form.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/jQuery/jQuery.ui/jquery-ui-1.8.23.custom.min.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/plugins/setting.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/ui/jquery-ui-1.8.23.custom.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/ui/bootstrap.min.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/layout.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/messagebox.css") }}" />
+<script>
+var bind_xsrf = function(obj){
+	obj.prepend($('{{ xsrf_form_html() }}'));
+}
+var get_xsrf = function(){
+	return '{{ xsrf_form_html() }}'.replace('<input type="hidden" name="_xsrf" value="','').replace('"/>','');
+}
+$(function(){
+	bind_xsrf($("#del-msg-form"))
+	bind_xsrf($("#send-msg-form"))
+	bind_xsrf($("#re-msg-form"))
+})
+</script>
+<!-- fixed -->
+<style>
+#top .dropdown-menu{
+	min-width:0px;
+}
+#top .dropdown-menu a{
+	color:#111;
+}
+#top .dropdown-menu a:hover{
+color:#fff;
+}
+</style>
+<!--[if !gt IE 8]>
+<script>
+$(function(){
+$S.alert('您的浏览器版本过低，不能获得良好的浏览效果，请升级或者使用Chrome、Firefox浏览器。');
+});
+</script>
+<![endif]-->
+{% block htmlhead %}{% end %}
+</head>
+<body>
+{% block header %}<div id="top">
+	<div id="top-logo">
+		<a href="/">深大觅友</a>
+	</div>
+	<div id="top-nav">
+		<div id="msg-tips" style="display:none;">N</div>
+		{% if not current_user == None %}
+			<ul>
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">进入社区</a>
+					<ul class="dropdown-menu">
+						<li><a href="/map">社区街道</a></li>
+						<li><a href="/office">办公楼</a></li>
+						<li><a href="/teach">教学楼</a></li>
+					</ul>
+				</li>
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">我的资料</a>
+					<ul class="dropdown-menu">
+						<li><a href="/account/profile">个人信息</a></li>
+						<li><a href="#" onClick="getMsg(1)">我的信箱<span style="font-size:12px;" id="msg-tips-s"></span></a></li>
+						<li><a href="#">我的钱包</a></li>
+						<li><a href="/account/friends">我的好友</a></li>
+						<li><a href="/account/myshop">我的小店</a></li>
+					</ul>
+				</li>
+				<li><a href="/auth/logout">退出</a></li>
+			</ul>
+		{% else %}
+			<ul>
+				<li><a href="/auth/login">登录</a></li>
+				<li><a href="/auth/reg">注册</a></li>
+			</ul>
+		{% end %}
+	</div>
+</div>{% end %}
+{% block content %}{% end %}
+{% block right %}
+<div id="right">
+	<div id="right-descr">
+		<div id="right-descr-title">{{ title }}</div>
+		{{ descr }}
+	</div>
+	<div id="right-message">
+	<!--
+		<div id="right-message-nav">
+			<ul>
+				<li>地图动态</li>
+				<li>消息列表</li>
+			</ul>
+		</div>
+	-->
+	{% block message %}
+		<div id="right-message-list">
+			<div id="right-chat-msg-list" class="beautiScoll">
+			{% for id,msg in msgs %}<div class="block-msg" id="{{id}}">{{msg}}</div>{% end %}
+		    </div>
+            <form id="message_form" >
+			 {{ xsrf_form_html() }}
+                    <div class="input-append">
+                        <input type="text" id="chat_content" name="content" style="width:150px"><button type="submit" class="btn btn-danger">说</button>
+                    </div>
+			</form>
+		</div>
+	{% end %}
+	</div>
+</div>
+{%end%}
+
+{% block footer %}
+<div id="footer">
+	深大觅友 - MeetYou
+	<br >
+	<a href="#/infor/aboutus" onclick="$S.alert('请挪步到办公楼->站长办公室，谢谢合作！',2000)">关于我们</a> | <a href="#/infor/contactus" onclick="$S.alert('请挪步到办公楼->站长办公室，谢谢合作！',2000)">联系我们</a>
+</div>
+{% end %}
+</body>
+</html>
