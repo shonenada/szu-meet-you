@@ -1,3 +1,4 @@
+*.pyc
 pep8.py
 production.conf
 develop.conf
