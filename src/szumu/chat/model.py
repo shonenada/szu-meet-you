@@ -2,9 +2,13 @@
 #-*- coding: utf-8 -*-
 
 import uuid
-from szumu.database import dbMaster
+from szumu.database import DbMaster
+
+db = DbMaster.db
+
 
 unique_id = lambda: str(uuid.uuid1())
+
 
 class Chat(object):
     
@@ -30,7 +34,7 @@ class Chat(object):
             self.observers = []
 
 
-class Msg(dbMaster):
+class Msg():
     """ Table name = szu_mu_msg
         Columns:
             id

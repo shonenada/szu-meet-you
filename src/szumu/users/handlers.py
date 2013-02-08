@@ -5,6 +5,7 @@ import time
 import tornado.web
 
 import szumu.web
+from szumu.web import json_encode
 from szumu.users import model
 from szumu.base import route
 from szumu.config.webConfig import Config
@@ -45,11 +46,11 @@ class UserSignUp(szumu.web.Controller):
             success = False
             message.append('昵称不能为空 ')
         
-        if model.User.check_username_exist(self.db, username):
+        if model.User.check_username_exist(username):
             success = False
             message.append('邮箱已存在，请更换后重新注册')
         
-        if model.User.check_nickname_exist(self.db, nickname):
+        if model.User.check_nickname_exist(nickname):
             success = False
             message.append('昵称已存在，请更换后重新注册')
         
@@ -98,7 +99,7 @@ class UserLogin(szumu.web.Controller):
             message.append('密码长度应为6~16位')
             success = False
         
-        userid = model.User.check_username_and_password(self.db, model.User.salt, username, password)
+        userid = model.User.check_username_and_password(model.User.salt, username, password)
         
         if not userid:
             """ Log Failed """
@@ -177,15 +178,15 @@ class Profile(szumu.web.Controller):
             success = False
             message.append('昵称不能为空')
             
-        if model.User.check_nickname_exist(self.db, nickname, self.get_current_user().username):
+        if model.User.check_nickname_exist(nickname, self.get_current_user().username):
             success = False
             message.append('昵称已存在，请更换后重试')
             
-        if model.User.check_truename(self.db, truename, user.username):
+        if model.User.check_truename(truename, user.username):
             success = False
             message.append('姓名已存在，若您未曾登记过信息，请联系站长')
             
-        if model.User.check_number(self.db, number, user.username):
+        if model.User.check_number(number, user.username):
             success = False
             message.append('学号已存在，若您未曾登记过信息，请联系站长')
             
@@ -215,12 +216,12 @@ class UserInfor(szumu.web.Controller):
     def get(self, userid):
         user = self.get_current_user().as_array()
         myid = user['id']        
-        mate = model.User.get_user_by_id(self.db, userid)
+        mate = model.User.get_user_by_id(userid)
         self.finish(json_encode({
                                  'id':mate['id'],
                                  'nickname':mate['nickname'],
                                  'college':mate['college'],
-                                 'friended':model.RelationShip.check_friended(self.db, myid, mate['id']),
+                                 'friended':model.RelationShip.check_friended(myid, mate['id']),
                                  }))
         
     @tornado.web.authenticated

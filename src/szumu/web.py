@@ -6,6 +6,7 @@ from datetime import date, datetime
 
 import tornado
 
+from szumu.database import DbMaster
 from szumu.users import model
 
 httperror = tornado.web.HTTPError
@@ -25,24 +26,21 @@ def __default(obj):
 def json_encode(o):
     return json.dumps(o, default=__default)    
 
+
 class Controller(tornado.web.RequestHandler):
-   
-    @property
-    def db(self):
-        return self.application.db
-    
+
     def get_current_user(self, user_id=None):
         if not user_id:
             user_id = self.get_secure_cookie('userinfor')
         if not user_id or user_id == None: return None
-        user = self.db.get("SELECT * FROM szu_mu_user WHERE id = %s ", int(user_id) )
+        user = DbMaster.db.get("SELECT * FROM szu_mu_user WHERE id = %s ", int(user_id) )
         return model.User(user['username'], user['password'], user['nickname'], user['gender'], self.request.remote_ip)
-    
+
     def check_whether_logged(self):
         user = self.get_current_user()
         if not user == None:
             self.redirect('/home')
-        
+
     def check_whether_finish_truename_and_number(self):
         user = self.get_current_user()
         if not user: raise httperror(403)
@@ -51,5 +49,3 @@ class Controller(tornado.web.RequestHandler):
         number = user['number']
         if not truename: raise httperror(403, 'Please input your truename')
         if not number: raise httperror(403, 'Please input your number')
-        
-    

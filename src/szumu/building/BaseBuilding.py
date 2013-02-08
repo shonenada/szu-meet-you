@@ -6,9 +6,13 @@ Created on 2012-8-16
 @author: Lyd
 '''
 
-from szumu.database import dbMaster
+from szumu.database import DbMaster
 
-class BaseBuilding(dbMaster):
+
+db = DbMaster.db
+
+
+class BaseBuilding():
     ''' 基础建筑物 '''
     """
         Columns:
@@ -34,15 +38,13 @@ class BaseBuilding(dbMaster):
     created = None
     
     def __init__(self, title):
-        dbMaster.__init__(self)
         self.title = title
-        dbMaster.connect(self)
         
     @staticmethod
-    def find(db, id):
+    def find(id):
         if not id or id == 'None':
             return None
         else:
-            return db.get("SELECT * FROM szu_mu_building WHERE `id` = %s", int(id))
+            return DbMaster.db.get("SELECT * FROM szu_mu_building WHERE `id` = %s", int(id))
         
         

@@ -4,6 +4,7 @@
 import tornado.web
 
 import szumu.web
+from szumu.web import json_encode
 from szumu.users import model
 from szumu.base import route
 
@@ -15,7 +16,7 @@ class CheckMsg(szumu.web.Controller):
         user = self.get_current_user()
         user = user.as_array()
         userid = user['id']
-        msg = model.Message.check_ones_msg(self.db, userid)
+        msg = model.Message.check_ones_msg(userid)
         if not msg:
             self.finish(json_encode({'newMsg':False}))
         else:
@@ -38,19 +39,19 @@ class GetMsg(szumu.web.Controller):
         user = user.as_array()
         userid = user['id']
         if (type == 'send'):
-            msg = model.Message.get_ones_send_msg(self.db, userid)
+            msg = model.Message.get_ones_send_msg(userid)
             if msg:
                 for x in msg:
-                    man = model.User.get_user_by_id(self.db, x['toid'])
+                    man = model.User.get_user_by_id(x['toid'])
                     x['man'] = man['nickname']
         if (type == 'receive'):
-            msg = model.Message.get_ones_receive_msg(self.db, userid)
+            msg = model.Message.get_ones_receive_msg(userid)
             if msg:
                 for x in msg:
-                    man = model.User.get_user_by_id(self.db, x['fromid'])
+                    man = model.User.get_user_by_id(x['fromid'])
                     x['man'] = man['nickname']
 
-        model.Message.updateMsgState(self.db, userid)
+        model.Message.updateMsgState(userid)
         
         self.finish(json_encode(msg))
 
@@ -77,13 +78,13 @@ class DelMsg(szumu.web.Controller):
 
         if kind == 'send':
             for x in delid:
-                msg = model.Message.find_msgob_by_id(self.db, x)
+                msg = model.Message.find_msgob_by_id(x)
                 if msg.fromid == user.id:
                     msg.hide_by_from()
 
         if kind == 'receive':
             for x in delid:
-                msg = model.Message.find_msgob_by_id(self.db, x)
+                msg = model.Message.find_msgob_by_id(x)
                 if msg.toid == userid:
                     msg.hide_by_to()
 
@@ -130,7 +131,7 @@ class ReMsg(szumu.web.Controller):
         if not content:
             self.finish(json_encode({'success':False,'message':'请输入回复的内容'}));
 
-        tomsg = model.Message.find_msgob_by_id(self.db, msgid)
+        tomsg = model.Message.find_msgob_by_id(msgid)
         if not tomsg:
             self.finish(json_encode({'success':False,'message':'您所回复的私信不存在'}));
         

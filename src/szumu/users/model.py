@@ -6,11 +6,14 @@ from hashlib import md5
 
 import tornado
 
-from szumu.database import dbMaster
+from szumu.database import DbMaster
 from szumu.config.webConfig import Config
 
 
-class User(dbMaster):
+db = DbMaster.db
+
+
+class User():
     
     id = None
     uesrname = None
@@ -37,38 +40,35 @@ class User(dbMaster):
     salt = Config.getSalt()
     
     def __init__(self, username, password, nickname, gender, ip):
-        dbMaster.__init__(self)
         self.username = username
         self.password = password
         self.nickname = nickname
         self.gender = gender
         self.remoteip = ip
-        dbMaster.connect(self)
-    
-        
+
     def hash_password(self, input_password):
         """ change the password of the current user """
         self.hashed_password = self._hash_password(self.salt, input_password)
-            
+
     def update_log_time(self, log_time):
-        return self.db.execute("UPDATE szu_mu_user SET logTime = %s where username = %s", log_time, self.username)
-    
+        return DbMaster.db.execute("UPDATE szu_mu_user SET logTime = %s where username = %s", log_time, self.username)
+
     def update_token(self, token):
-        return self.db.execute("UPDATE szu_mu_user SET token = %s where username = %s", token, self.username)
-    
+        return DbMaster.db.execute("UPDATE szu_mu_user SET token = %s where username = %s", token, self.username)
+
     def update_log_ip(self, ip):
-        return self.db.execute("UPDATE szu_mu_user SET logIP = %s where username = %s", ip, self.username)
-        
+        return DbMaster.db.execute("UPDATE szu_mu_user SET logIP = %s where username = %s", ip, self.username)
+
     def create(self):
         self.hash_password(self.password)
-        return self.db.execute("INSERT INTO szu_mu_user (username, password, nickname, gender, regIP, token) VALUES(%s, %s, %s, %s, %s, %s)" ,
+        return DbMaster.db.execute("INSERT INTO szu_mu_user (username, password, nickname, gender, regIP, token) VALUES(%s, %s, %s, %s, %s, %s)" ,
                            self.username, self.hashed_password, self.nickname, self.gender, self.remoteip, ' ')
-    
+
     def as_array(self):
-        return self.db.get("SELECT * FROM szu_mu_user WHERE username = %s and password = %s", self.username, self.password )
-    
+        return DbMaster.db.get("SELECT * FROM szu_mu_user WHERE username = %s and password = %s", self.username, self.password )
+
     def updateinfor(self):
-        return self.db.execute("UPDATE szu_mu_user SET "
+        return DbMaster.db.execute("UPDATE szu_mu_user SET "
                                "nickname=%s, gender=%s, truename=%s," 
                                "number=%s, college=%s, phone=%s, "
                                "shortPhone=%s, qq=%s ,"
@@ -81,7 +81,7 @@ class User(dbMaster):
                                )
         
     def reg_the_identity(self):
-        return self.db.execute("UPDATE szu_mu_user SET "
+        return DbMaster.db.execute("UPDATE szu_mu_user SET "
                                "truename=%s, birthday=%s, number=%s, "
                                "college=%s, phone=%s, shortPhone=%s, "
                                "qq=%s, state=%s "
@@ -93,33 +93,33 @@ class User(dbMaster):
     
     
     @staticmethod
-    def check_username_exist(db, username):
+    def check_username_exist(username):
         """Judge whether the username is existed in the database """
         if not username : return None
-        user = db.get("SELECT * FROM szu_mu_user where username = %s ", username)
+        user = DbMaster.db.get("SELECT * FROM szu_mu_user where username = %s ", username)
         if not user:
             return False;
         else:
             return True;
         
     @staticmethod
-    def check_nickname_exist(db, nickname, username=None):
+    def check_nickname_exist(nickname, username=None):
         """Judge whether the username is existed in the database """
         if not nickname : return None
         if not username:
-            user = db.get("SELECT * FROM szu_mu_user where nickname = %s ", nickname)
+            user = DbMaster.db.get("SELECT * FROM szu_mu_user where nickname = %s ", nickname)
         else:
-            user = db.get("SELECT * FROM szu_mu_user where nickname = %s and username <> %s", nickname, username )
+            user = DbMaster.db.get("SELECT * FROM szu_mu_user where nickname = %s and username <> %s", nickname, username )
         if not user:
             return False;
         else:
             return True;
     
     @staticmethod
-    def check_username_and_password(db, salt, username, password):
+    def check_username_and_password(salt, username, password):
         if not username or not password:
             raise tornado.web.HTTPError(401, "Auth failed")
-        user = db.get("SELECT * FROM szu_mu_user WHERE username = %s "
+        user = DbMaster.db.get("SELECT * FROM szu_mu_user WHERE username = %s "
                            "and password = %s",
                             username, User._hash_password(salt, password))
         if not user:
@@ -128,10 +128,10 @@ class User(dbMaster):
             return user['id']
         
     @staticmethod
-    def check_truename(db, truename, current_username):
-        if not db: return False
+    def check_truename(truename, current_username):
+        if not DbMaster.db: return False
         if not truename: return False
-        user = db.get("SELECT * FROM szu_mu_user WHERE truename = %s AND "
+        user = DbMaster.db.get("SELECT * FROM szu_mu_user WHERE truename = %s AND "
                       "username <> %s",
                       truename, current_username)
         if not user:
@@ -140,10 +140,10 @@ class User(dbMaster):
             return True
         
     @staticmethod
-    def check_number(db, number, current_username):
-        if not db: return False
+    def check_number(number, current_username):
+        if not DbMaster.db: return False
         if not number: return False
-        user = db.get("SELECT * FROM `szu_mu_user` WHERE number = %s AND "
+        user = DbMaster.db.get("SELECT * FROM `szu_mu_user` WHERE number = %s AND "
                       "username <> %s",
                       number, current_username
                       )
@@ -153,15 +153,15 @@ class User(dbMaster):
             return True
 
     @staticmethod
-    def get_user_by_id(db, userid):
-        return db.get("SELECT * FROM `szu_mu_user` WHERE "
+    def get_user_by_id(userid):
+        return DbMaster.db.get("SELECT * FROM `szu_mu_user` WHERE "
                         "id = %s",
                         int(userid))
 
     
     @staticmethod
-    def get_user_by_truename_and_number(db, truename, number):
-        return db.get("SELECT * FROM `szu_mu_user` WHERE "
+    def get_user_by_truename_and_number(truename, number):
+        return DbMaster.db.get("SELECT * FROM `szu_mu_user` WHERE "
                       "truename=%s AND number=%s",
                       truename, int(number)) 
     
@@ -174,12 +174,10 @@ class User(dbMaster):
     @staticmethod
     def _make_token(salt, ip, auth_time):
         return md5("<%s,%s|%s>" %(salt, ip, auth_time)).hexdigest()
-    
-    
 
 
-class RelationShip(dbMaster):
-    
+class RelationShip():
+
     """ Table name = szu_mu_relationship
         Columns:
             id 
@@ -188,34 +186,32 @@ class RelationShip(dbMaster):
             relationship
             created
     """
-    
+ 
     fromid = None
     toid = None
     relationship = None
     relationship_focus = 1
     relationship_ignore = 0
     create = None
-    
+
     def __init__(self, fromid, toid, relationship):
-        dbMaster.__init__(self)
         self.fromid = fromid
         self.toid = toid
         self.relationship = relationship
-        dbMaster.connect(self)
-        
+
     def save(self):
         if not self.fromid:
             return None
         if not self.toid:
             return None
-        return self.db.execute('INSERT INTO `szu_mu_relationship` ' 
+        return DbMaster.db.execute('INSERT INTO `szu_mu_relationship` ' 
                                 '(fromid, toid, relationship) '
                                 'VALUES(%s, %s, %s)', 
                                 int(self.fromid), 
                                 int(self.toid),
                                 int(self.relationship)
                                 )
-    
+
     def update(self):
         if not self.fromid:
             return None
@@ -223,12 +219,12 @@ class RelationShip(dbMaster):
             return None
         if not self.relationship:
             return None
-        return self.db.execute('UPDATE `szu_mu_relationship` '
+        return DbMaster.db.execute('UPDATE `szu_mu_relationship` '
                                'SET '
                                'relationship=%s ',
                                int(self.relationship)
                                )
-    
+
     def remove(self):
         if not self.fromid:
             return None
@@ -236,13 +232,13 @@ class RelationShip(dbMaster):
             return None
         if not self.relationship:
             return None
-        return self.db.execute('DELETE FROM `szu_mu_relationship` '
+        return DbMaster.db.execute('DELETE FROM `szu_mu_relationship` '
                                'WHERE `fromid` = %s AND `toid` = %s ', self.fromid, self.toid)
 
     ''' 获取关系列表 '''
     @staticmethod
-    def get_relationship_list(db, userid, kind, relationship):
-        if not db: return None
+    def get_relationship_list(userid, kind, relationship):
+        if not DbMaster.db: return None
         if not userid: return None
         if not kind: return None
         if not relationship: return None
@@ -252,36 +248,33 @@ class RelationShip(dbMaster):
         if kind == 'toid':
             sql = sql + "toid = %s "
         sql = sql + " AND relationship = %s"
-        return db.query(sql,
-                        userid,
-                        relationship
-                        )
-    
+        return DbMaster.db.query(sql, userid, relationship)
+
     ''' 关注的对象 '''
     @staticmethod
-    def get_focus_list(db, userid):
-        return RelationShip.get_relationship_list(db, userid, 'fromid', RelationShip.relationship_focus)
+    def get_focus_list(userid):
+        return RelationShip.get_relationship_list(userid, 'fromid', RelationShip.relationship_focus)
 
     ''' 黑名单 '''
     @staticmethod
-    def get_ignore_list(db, userid):
-        return RelationShip.get_relationship_list(db, userid, 'fromid', RelationShip.relationship_ignore)
+    def get_ignore_list(userid):
+        return RelationShip.get_relationship_list(userid, 'fromid', RelationShip.relationship_ignore)
 
     ''' 被关注列表 '''
     @staticmethod
-    def get_focused_list(db, userid):
-        return RelationShip.get_relationship_list(db, userid, 'toid', RelationShip.relationship_focus)
+    def get_focused_list(userid):
+        return RelationShip.get_relationship_list(userid, 'toid', RelationShip.relationship_focus)
 
     ''' 被拉黑列表 '''
     @staticmethod
-    def get_ignored_list(db, userid):
-        return RelationShip.get_relationship_list(db, userid, 'toid', RelationShip.relationship_ignore)
+    def get_ignored_list(userid):
+        return RelationShip.get_relationship_list(userid, 'toid', RelationShip.relationship_ignore)
 
     ''' 相互关注 '''
     @staticmethod
-    def get_friends_list(db, userid):
-        focus = RelationShip.get_focus_list(db, userid)
-        focused = RelationShip.get_focused_list(db, userid)
+    def get_friends_list(userid):
+        focus = RelationShip.get_focus_list(userid)
+        focused = RelationShip.get_focused_list(userid)
         focused_list = []
         friends = []
         for x in focused:
@@ -290,16 +283,16 @@ class RelationShip(dbMaster):
             if x['toid'] in focused_list:
                 friends.append(x['toid'])
         return friends
-    
+
     ''' 检测两个用户的关系 '''
     @staticmethod
-    def check_friended(db, userid, friendid):
-        relationship = db.get('SELECT * FROM `szu_mu_relationship` WHERE '
+    def check_friended(userid, friendid):
+        relationship = DbMaster.db.get('SELECT * FROM `szu_mu_relationship` WHERE '
                               ' `fromid` = %s AND `toid` = %s ',userid, friendid)
         return (relationship!=None)
 
-class Message(dbMaster):
-    
+
+class Message():
     """
         Table name = 'szu_mu_msg'
         Columns:
@@ -310,7 +303,6 @@ class Message(dbMaster):
             created
             state
     """
-
     id = None
     fromid = None
     toid = None
@@ -323,21 +315,19 @@ class Message(dbMaster):
     to_hide = None
 
     def __init__(self, fromid, toid, msg, state=None):
-        dbMaster.__init__(self)
         self.fromid = fromid
         self.toid = toid
         self.msg = msg
         if not state:
             state = self.msg_state_not_read
         self.state = state
-        dbMaster.connect(self)
 
     def save(self):
         if not self.fromid: return None
         if not self.toid: return None
         if not self.msg: return None
         if not self.state: self.state = self.msg_state_not_read
-        self.db.execute("INSERT INTO `szu_mu_msg` (fromid, "
+        DbMaster.db.execute("INSERT INTO `szu_mu_msg` (fromid, "
                          "toid, msg, state) VALUES ("
                          "%s, %s, %s, %s) ",
                           self.fromid,
@@ -350,41 +340,39 @@ class Message(dbMaster):
     def remove(self):
         if not self.id:
             return None
-        return self.db.execute("DELETE FROM `szu_mu_msg` WHERE id=%s", int(self.id))
+        return DbMaster.db.execute("DELETE FROM `szu_mu_msg` WHERE id=%s", int(self.id))
 
     ''' 发信者软删除当前记录 '''
     def hide_by_from(self):
         if not self.id:
             return None
-        return self.db.execute("UPDATE `szu_mu_msg` SET `from_hide`=1 WHERE id=%s", int(self.id))
-
+        return DbMaster.db.execute("UPDATE `szu_mu_msg` SET `from_hide`=1 WHERE id=%s", int(self.id))
 
     ''' 收信者软删除当前记录 '''
     def hide_by_to(self):
         if not self.id:
             return None
-        return self.db.execute("UPDATE `szu_mu_msg` SET `to_hide`=1 WHERE id=%s", int(self.id))
-
+        return DbMaster.db.execute("UPDATE `szu_mu_msg` SET `to_hide`=1 WHERE id=%s", int(self.id))
 
     ''' 获取私信对象 '''
     @staticmethod
-    def find_msgob_by_id(db, id):
-        msg = db.get('SELECT * FROM `szu_mu_msg` WHERE id=%s', int(id))
+    def find_msgob_by_id(id):
+        msg = DbMaster.db.get('SELECT * FROM `szu_mu_msg` WHERE id=%s', int(id))
         if not msg:
             return None
         else:
             Msg = Message(msg['fromid'], msg['toid'], msg['msg'], msg['state'])
             Msg.id = id
             return Msg
-    
+
     ''' 检测是否有新私信 '''
     @staticmethod
-    def check_ones_msg(db, userid):
-        if not db:
+    def check_ones_msg(userid):
+        if not DbMaster.db:
             return Nonec
         if not userid:
             return None
-        msg = db.query("SELECT * FROM `szu_mu_msg` WHERE "
+        msg = DbMaster.db.query("SELECT * FROM `szu_mu_msg` WHERE "
                         "toid=%s AND state=%s AND to_hide=0 ",
                          userid,
                          Message.msg_state_not_read
@@ -396,21 +384,20 @@ class Message(dbMaster):
 
     ''' 更新私信状态 '''
     @staticmethod
-    def updateMsgState(db, userid):
-        if not db:
+    def updateMsgState(userid):
+        if not DbMaster.db:
             return None
         if not userid:
             return None
-        result = db.execute("UPDATE `szu_mu_msg` SET state=%s WHERE toid=%s", 
+        result = DbMaster.db.execute("UPDATE `szu_mu_msg` SET state=%s WHERE toid=%s", 
                             int(Message.msg_state_readed), 
                             int(userid))
         return result
 
-    
     ''' 获取私信列表 '''
     @staticmethod
-    def get_ones_msg(db, userid, kind):
-        if not db: 
+    def get_ones_msg(userid, kind):
+        if not DbMaster.db: 
             return None
         if not userid:
             return None
@@ -423,7 +410,7 @@ class Message(dbMaster):
         if kind == 'receive':
             sql = sql + "toid = %s AND `to_hide`=0"
         sql = sql + " ORDER BY `created` DESC "
-        msg = db.query(sql,int(userid))
+        msg = DbMaster.db.query(sql,int(userid))
         if not msg:
             return None
         else:
@@ -431,10 +418,10 @@ class Message(dbMaster):
 
     ''' 获取私信（收到）列表 '''
     @staticmethod
-    def get_ones_receive_msg(db, userid):
-        return Message.get_ones_msg(db, userid, 'receive')
+    def get_ones_receive_msg(userid):
+        return Message.get_ones_msg(userid, 'receive')
 
     ''' 获取私信（发送）列表 '''
     @staticmethod
-    def get_ones_send_msg(db, userid):
-        return Message.get_ones_msg(db, userid, 'send')
+    def get_ones_send_msg(userid):
+        return Message.get_ones_msg(userid, 'send')

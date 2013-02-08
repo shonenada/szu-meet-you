@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 from szumu.base import route
-import szumu.chat.handler
+import szumu.chat.handlers
 import szumu.web
 from szumu.map.model import Map
 from szumu.building.BaseBuilding import BaseBuilding
@@ -10,15 +10,15 @@ from szumu.building.special import *
 from szumu.building.shop.model import Shop
 from szumu.config.buildingConfig import buildingConfig
 
-chat =  szumu.chat.handler.msgsrv
+chat =  szumu.chat.handlers.msgsrv
 
 
 @route(r"/map/([0-9]+)")
-class Map(szumu.web.Controller):
+class MapHandler(szumu.web.Controller):
     
     def get(self, mapid):
         mapid = unicode(mapid).strip()
-        map = Map.find(self.db, int(mapid))
+        map = Map.find(int(mapid))
         if not map:
             raise httperror(404, "Not Found")
         
@@ -35,7 +35,7 @@ class Map(szumu.web.Controller):
             elif x in special_map:
                 buildings[i] = special_map[x].tostring()
             else:
-                buildings[i] = BaseBuilding.find(self.db, x)
+                buildings[i] = BaseBuilding.find(x)
             i = i + 1
         
         current_user = self.get_current_user()

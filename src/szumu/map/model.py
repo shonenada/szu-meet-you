@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-class Map(object):
+from szumu.database import DbMaster, db
+
+
+class Map():
     """ The model of Map information """
-    
+
     mid = None
     title = None
     descr = None
@@ -27,27 +30,19 @@ class Map(object):
                  14:None,
                  }
     created = None
-    
+
     def __init__(self, title, descr=None, path=[], link=[], buildings={}):
         self.title = title
         self.descr = descr
         self.path = path
         self.link = link
         self.buildings = buildings
-        
-        
+
     @staticmethod
-    def find(db, id):
-        db = db.get("SELECT * FROM szu_mu_map WHERE id = %s", id)
-        if not db :
+    def find(id):
+        query = DbMaster.db.get("SELECT * FROM szu_mu_map WHERE id = %s", id)
+        if not query :
             return None
-        map = Map(db['title'], db['descr'], db['path'], db['link'], db['buildings'])
+        map = Map(query['title'], query['descr'], query['path'], query['link'], query['buildings'])
         map.mid = id
         return map
-    
-
-
-
-
-
-

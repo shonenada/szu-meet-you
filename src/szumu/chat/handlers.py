@@ -2,24 +2,28 @@
 #-*- coding: utf-8 -*-
 
 import json
-from szumu.web import Controller
+
 import tornado.web
+
+from szumu.base import route
+from szumu.web import json_encode
+from szumu.web import Controller
 from szumu.chat.model import Chat
 
 
 msgsrv = Chat(1)
-json_encoder = json.JSONEncoder()
-json_encode = json_encoder.encode
 
 
-class ChatPageHandler(Controller):
+@route(r"/chat")
+class ChatPage(Controller):
     """ Build the handler of Chat"""
     def get(self):
         """ Rewrite GET method. """
         self.render('chat/chat.html', msgs=reversed(msgsrv.messages))
 
 
-class ChatMessageHandler(Controller):
+@route(r"/chat/messages")
+class ChatMessage(Controller):
     @tornado.web.asynchronous
     def get(self):
         @msgsrv.listen
