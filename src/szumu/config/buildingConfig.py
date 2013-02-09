@@ -5,7 +5,7 @@ Created on 2012-8-16
 @author: Lyd
 '''
 class buildingConfig(object):
-    
+
     szumu_building_office = {'title':'办公楼',
                              'ownerid':0,
                              'pic':None,
@@ -15,7 +15,7 @@ class buildingConfig(object):
                              'color':'brown',
                              'special':'office',
                              }
-    
+
     szumu_building_student_center = {'title':'学生活动中心',
                                      'ownerid':0,
                                      'pic':None,
@@ -25,7 +25,7 @@ class buildingConfig(object):
                                      'color':'brown',
                                      'special':'student',
                                      }
-    
+
     szumu_building_stone = {'title':'石头坞',
                              'ownerid':0,
                              'pic':None,
@@ -126,9 +126,6 @@ class buildingConfig(object):
                             'color':'brown',
                             'special':'beingBuilt',
                             }
-    
-    
-    
 
     """ 出租店铺类型 """
     szumu_building_rent_type = [
@@ -136,7 +133,7 @@ class buildingConfig(object):
                                 {'id':'shop/topic', 'name':'主题店铺',},
                                 {'id':'shop/sell', 'name':'商品店铺',}
                                ]
-    
+
     """ 开课单位代号（ 每学期需要更新一次） """
     szumu_building_teach_college_no = {
                                          1: '材料学院', 
@@ -175,4 +172,3 @@ class buildingConfig(object):
                                          34:'招生就业办公室',
                                          35:'中国经济特区研究中心',
                                         }
-    

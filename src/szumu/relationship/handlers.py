@@ -5,7 +5,6 @@ import time
 import tornado.web
 
 import szumu.web
-
 from szumu.users import model
 from szumu.base import route
 
@@ -25,9 +24,10 @@ class NewRelationship(szumu.web.Controller):
         user = self.get_current_user()
         user = user.as_array()
         userid = user['id']
-        relation = model.RelationShip(userid, friendid, model.RelationShip.relationship_focus)
+        relation = model.RelationShip(userid, friendid,
+                                      model.RelationShip.relationship_focus)
         relation.save()
-        self.finish(json_encode({'success':True}))
+        self.finish(json_encode({'success': True}))
 
 
 @route(r"/account/relation/friend/remove/([0-9]+)")
@@ -45,6 +45,7 @@ class RemoveRelationship(szumu.web.Controller):
         user = self.get_current_user()
         user = user.as_array()
         userid = user['id']
-        relation = model.RelationShip(userid, friendid, model.RelationShip.relationship_focus)
+        relation = model.RelationShip(userid, friendid,
+                                      model.RelationShip.relationship_focus)
         relation.remove()
-        self.finish(json_encode({'success':True}))
+        self.finish(json_encode({'success': True}))

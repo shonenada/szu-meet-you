@@ -26,7 +26,7 @@ class BaseBuilding():
             8# sepcial
             9# created
     """
-    
+
     id = None
     title = None
     ownerid = None
@@ -36,15 +36,14 @@ class BaseBuilding():
     descr = None
     special = None
     created = None
-    
+
     def __init__(self, title):
         self.title = title
-        
+
     @staticmethod
     def find(id):
         if not id or id == 'None':
             return None
         else:
-            return DbMaster.db.get("SELECT * FROM szu_mu_building WHERE `id` = %s", int(id))
-        
-        
+            sql = "SELECT * FROM szu_mu_building WHERE `id` = %s"
+            return DbMaster.db.get(sql, int(id))

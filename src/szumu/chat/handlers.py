@@ -28,17 +28,17 @@ class ChatMessage(Controller):
     def get(self):
         @msgsrv.listen
         def observer(id, msg):
-            update_msg = json_encode({'id':id,'msg':msg})
+            update_msg = json_encode({'id': id, 'msg': msg})
             try:
                 self.finish(update_msg)
             except IOError:
                 pass
-            
+
     @tornado.web.authenticated
     def post(self):
         user = self.get_current_user()
-        if not user :
+        if not user:
             raise httperror(403, 'Forbidden')
         name = unicode(user.nickname).strip()
         content = unicode(self.get_argument("content")).strip()
-        msgsrv.add_message("%s: %s" % (name,content))
+        msgsrv.add_message("%s: %s" % (name, content))

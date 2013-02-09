@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-import tornado.database
+from tornado.database import Connection
 
 
 class DbMaster():
@@ -13,10 +13,10 @@ class DbMaster():
         self.connect()
 
     def connect(self):
-        self.db = tornado.database.Connection(host=self.app.config['db_host'],
-                                     database=self.app.config['db_name'],
-                                     user=self.app.config['db_user'],
-                                     password=self.app.config['db_pass'])
+        self.db = Connection(host=self.app.config['db_host'],
+                             database=self.app.config['db_name'],
+                             user=self.app.config['db_user'],
+                             password=self.app.config['db_pass'])
         DbMaster.db = self.db
 
 

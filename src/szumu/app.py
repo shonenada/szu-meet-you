@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-
 import os.path
 
 import tornado.httpserver
@@ -22,7 +21,7 @@ def create_app(config_file):
     app = Application(modules)
 
     app.load_route()
-    
+
     app.load_config_from_file(config_file)
     app.load_config_from_file(get_app_root() + "settings.py")
 

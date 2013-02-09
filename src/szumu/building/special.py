@@ -2,7 +2,6 @@
 #-*- coding: utf-8 -*-
 '''
 Created on 2012-8-16
-
 @author: Lyd
 '''
 
@@ -14,21 +13,19 @@ from szumu.database import DbMaster
 db = DbMaster.db
 
 
-"""
-Columns:
-    1# id
-    2# title
-    3# ownerid
-    4# pic
-    5# mapid
-    6# mapsite
-    7# color
-    8# descr
-    9# special
-"""
-
-
 class SpecialBuilding(BaseBuilding):
+    """
+    Columns:
+        1# id
+        2# title
+        3# ownerid
+        4# pic
+        5# mapid
+        6# mapsite
+        7# color
+        8# descr
+        9# special
+    """
 
     def get_infor(self, bd):
         self.title = bd['title']
@@ -39,17 +36,16 @@ class SpecialBuilding(BaseBuilding):
         self.color = bd['color']
         self.descr = bd['descr']
         self.special = bd['special']
-    
+
     def tostring(self):
-        return {
-                'title':self.title,
-                'ownerid':self.ownerid,
-                'pic':self.pic,
-                'mapid':self.mapid,
-                'mapsite':self.mapsite,
-                'color':self.color,
-                'descr':self.descr,
-                'special':self.special,
+        return {'title': self.title,
+                'ownerid': self.ownerid,
+                'pic': self.pic,
+                'mapid': self.mapid,
+                'mapsite': self.mapsite,
+                'color': self.color,
+                'descr': self.descr,
+                'special': self.special,
                 }
 
 
@@ -57,10 +53,10 @@ class Office(SpecialBuilding):
     ''' 办公楼 '''
     def __init__(self):
         self.get_infor(buildingConfig.szumu_building_office)
-   
+
     def get_announce(self):
         pass
-    
+
 
 class StudentCenter(SpecialBuilding):
     ''' 学生活动中心 '''
@@ -69,7 +65,7 @@ class StudentCenter(SpecialBuilding):
 
 
 class Stone(SpecialBuilding):
-    ''' 石头邬 '''    
+    ''' 石头邬 '''
     def __init__(self):
         self.get_infor(buildingConfig.szumu_building_stone)
 
@@ -82,10 +78,10 @@ class TechBuilding(SpecialBuilding):
 
 class TeachingBuilding(SpecialBuilding):
     ''' 教学楼  '''
-    ''' 
-                开课单位代号:
-        1: 材料学院 
-        2: 财会学院 
+    '''
+    开课单位代号:
+        1: 材料学院
+        2: 财会学院
         3: 传播学院
         4: 大学英语教学部
         5: 电子科学与技术学院
@@ -119,37 +115,51 @@ class TeachingBuilding(SpecialBuilding):
         33:艺术设计学院
         34:招生就业办公室
         35:中国经济特区研究中心
-    '''    
-    
+    '''
+
     college_no = buildingConfig.szumu_building_teach_college_no
-    
+
     def __init__(self):
         self.get_infor(buildingConfig.szumu_building_teach)
-        
+
     @staticmethod
     def get_course_infor(id):
-        if not DbMaster.db : return None
-        if not id : return None
-        return DbMaster.db.get('SELECT * FROM `szu_mu_course` WHERE id=%s', int(id))
-    
+        if not DbMaster.db:
+            return None
+        if not id:
+            return None
+        return DbMaster.db.get('SELECT * FROM `szu_mu_course` WHERE id=%s',
+                               int(id))
+
     @staticmethod
     def get_course_infor_by_classid(classid):
-        if not DbMaster.db : return None
-        if not classid : return None
-        return DbMaster.db.get('SELECT * FROM `szu_mu_course` WHERE cid = %s', int(classid))
-    
+        if not DbMaster.db:
+            return None
+        if not classid:
+            return None
+        return DbMaster.db.get('SELECT * FROM `szu_mu_course` WHERE cid = %s',
+                               int(classid))
+
     @staticmethod
     def get_class_infor_by_truename_and_number(truename, number):
-        if not DbMaster.db:return None
-        if not truename: return None
-        if not number: return None
-        return DbMaster.db.query("SELECT * FROM `szu_mu_stuselect` WHERE truename = %s and number = %s", truename, number )
-    
+        if not DbMaster.db:
+            return None
+        if not truename:
+            return None
+        if not number:
+            return None
+        return DbMaster.db.query("SELECT * FROM `szu_mu_stuselect` WHERE"
+                                 "truename = %s and number = %s",
+                                 truename, number)
+
     @staticmethod
     def get_class_infor_by_classid(classid):
-        if not DbMaster.db: return None
-        if not classid : return None
-        return DbMaster.db.query("SELECT * FROM `szu_mu_stuselect` WHERE cid = %s", classid)
+        if not DbMaster.db:
+            return None
+        if not classid:
+            return None
+        return DbMaster.db.query("SELECT * FROM `szu_mu_stuselect`"
+                                 "WHERE cid = %s", classid)
 
 
 class LiteraBuilding(SpecialBuilding):
@@ -197,9 +207,10 @@ class BeingRent(SpecialBuilding):
     """ 出租中 """
     def __init__(self):
         self.get_infor(buildingConfig.szumu_building_rent)
-    
+
     def createShop(self, id):
-        shop = DbMaster.db.get("SELECT * FROM szu_mu_building WHERE id = %s AND special = 'rent'", int(id))
+        shop = DbMaster.db.get("SELECT * FROM szu_mu_building WHERE"
+                               "id = %s AND special = 'rent'", int(id))
         self.id = shop['id']
         self.title = shop['title']
         self.ownerid = shop['ownerid']
@@ -213,36 +224,32 @@ class BeingRent(SpecialBuilding):
             return None
         if not self.id:
             return None
-            
+
         return DbMaster.db.execute("UPDATE `szu_mu_building` SET "
-                        "title = %s, "
-                        "ownerid = %s, "
-                        "special = %s, "
-                        "descr = %s "
-                        "WHERE id = %s ", 
-                        self.title, int(self.ownerid), self.special, self.descr, int(self.id))
-
-
+                                   "title = %s, ownerid = %s, special = %s, "
+                                   "descr = %s WHERE id = %s ",
+                                   self.title, int(self.ownerid),
+                                   self.special, self.descr, int(self.id))
 
     @staticmethod
     def find(id):
-        if not id: return None
-        return DbMaster.db.get("SELECT * FROM szu_mu_building WHERE id = %s AND special = 'rent'", int(id))
-    
+        if not id:
+            return None
+        return DbMaster.db.get("SELECT * FROM szu_mu_building WHERE"
+                               "id = %s AND special = 'rent'", int(id))
 
-special_map = {
-      'office': Office(),
-      'northlib':NorthLib(),
-      'southlib':SouthLib(),
-      'teach':TeachingBuilding(),
-      'tech':TechBuilding(),
-      'litera':LiteraBuilding(),
-      'student':StudentCenter(),
-      'stone':Stone(),
-      'gym':Gym(),
-      'dorm':Dorm(),
-      'rent':BeingRent(),
-      }
+
+special_map = {'office': Office(),
+               'northlib': NorthLib(),
+               'southlib': SouthLib(),
+               'teach': TeachingBuilding(),
+               'tech': TechBuilding(),
+               'litera': LiteraBuilding(),
+               'student': StudentCenter(),
+               'stone': Stone(),
+               'gym': Gym(),
+               'dorm': Dorm(),
+               'rent': BeingRent()}
 
 
 class ClassComment():
@@ -277,12 +284,13 @@ class ClassComment():
             return None
 
         return DbMaster.db.execute("INSERT INTO `szu_mu_class_comment` "
-                "(classid, userid, comment) VALUES(%s, %s, %s)",
-                self.classid, self.userid, self.comment
-                )
-            
+                                   "(classid, userid, comment) "
+                                   "VALUES(%s, %s, %s)",
+                                   self.classid, self.userid, self.comment)
+
     @staticmethod
-    def get_comment_by_classid( classid):
+    def get_comment_by_classid(classid):
         if not classid:
             return None
-        return DbMaster.db.query('SELECT * FROM `szu_mu_class_comment` WHERE classid = %s ORDER BY id DESC', classid)
+        return DbMaster.db.query('SELECT * FROM `szu_mu_class_comment` WHERE'
+                                 'classid = %s ORDER BY id DESC', classid)

@@ -10,22 +10,23 @@ from szumu.building.special import *
 from szumu.building.shop.model import Shop
 from szumu.config.buildingConfig import buildingConfig
 
-chat =  szumu.chat.handlers.msgsrv
+
+chat = szumu.chat.handlers.msgsrv
 
 
 @route(r"/map/([0-9]+)")
 class MapHandler(szumu.web.Controller):
-    
+
     def get(self, mapid):
         mapid = unicode(mapid).strip()
         map = Map.find(int(mapid))
         if not map:
             raise httperror(404, "Not Found")
-        
+
         link = map.link.split(',')
         path = map.path.split(',')
         build = map.buildings.split(',')
-        
+
         buildings = {}
         i = 0
 
@@ -37,26 +38,20 @@ class MapHandler(szumu.web.Controller):
             else:
                 buildings[i] = BaseBuilding.find(x)
             i = i + 1
-        
+
         current_user = self.get_current_user()
-        if not current_user == None:
+        if not current_user is None:
             current_user = current_user.as_array()
 
         self.set_cookie('lastview', mapid)
 
         special = [x['id'] for x in buildingConfig.szumu_building_rent_type]
         special.append('rent')
-        
-        self.render('map.html', 
-                        map=map.link, 
-                        title=map.title, descr=map.descr, 
-                        link=link,
-                        path=path,
-                        buildings=buildings,
-                        msgs=chat.messages,
-                        special=special,
-                    )
-    
+
+        self.render('map.html', map=map.link, title=map.title,
+                    descr=map.descr, link=link, path=path,
+                    buildings=buildings, msgs=chat.messages, special=special)
+
     def post(self):
         raise httperror(403, "Forbidden")
 
@@ -69,6 +64,6 @@ class ViewLastMap(szumu.web.Controller):
             self.redirect('/map/' + lastview)
         else:
             raise httperror(404, 'Not Found')
-    
+
     def post(self):
         raise httperror(403, 'Forbidden')
