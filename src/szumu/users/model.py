@@ -7,7 +7,6 @@ from hashlib import md5
 import tornado
 
 from szumu.database import DbMaster
-from szumu.config.webConfig import Config
 
 
 db = DbMaster.db
@@ -38,7 +37,7 @@ class User():
 
     table = "szu_mu_user"
 
-    salt = Config.getSalt()
+    salt = "WAIT_TO_MODIFY"
 
     def __init__(self, username, password, nickname, gender, ip):
         self.username = username

@@ -8,7 +8,7 @@ from szumu.map.model import Map
 from szumu.building.BaseBuilding import BaseBuilding
 from szumu.building.special import *
 from szumu.building.shop.model import Shop
-from szumu.config.buildingConfig import buildingConfig
+from szumu.config import buildings as builds
 
 
 chat = szumu.chat.handlers.msgsrv
@@ -45,7 +45,7 @@ class MapHandler(szumu.web.Controller):
 
         self.set_cookie('lastview', mapid)
 
-        special = [x['id'] for x in buildingConfig.szumu_building_rent_type]
+        special = [x['id'] for x in builds.RENT_TYPE]
         special.append('rent')
 
         self.render('map.html', map=map.link, title=map.title,

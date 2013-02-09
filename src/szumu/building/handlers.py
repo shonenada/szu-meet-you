@@ -128,8 +128,9 @@ class ClassMate(szumu.web.Controller):
         classes = special.TeachingBuilding.get_class_infor_by_classid(classid)
         classinfor = []
         for x in classes:
-            if (UserModel.check_truename(x['truename'], username) and
-                UserModel.check_number(x['number'], username)):
+            checked_name = UserModel.check_truename(x['truename'], username)
+            checked_number = UserModel.check_number(x['number'], username)
+            if (checked_name and checked_number):
                 mate = UserModel.get_user_by_truename_and_number(x['truename'],
                                                                  x['number'])
                 picurl = md5("AvatarUrl:"+str(mate['id'])).hexdigest()
@@ -267,7 +268,7 @@ class Rent(BuildingHandler):
             raise httperror(404, 'Not Found')
         house = special.BeingRent.find(id)
         self.render('buildings/rent.html', house=house,
-                    rentType=buildingConfig.szumu_building_rent_type)
+                    rentType=buildings.RENT_TYPE)
 
     @tornado.web.authenticated
     def post(self, id):

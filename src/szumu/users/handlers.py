@@ -8,7 +8,6 @@ import szumu.web
 from szumu.web import json_encode
 from szumu.users import model
 from szumu.base import route
-from szumu.config.webConfig import Config
 
 
 @route("/auth/reg")
@@ -94,8 +93,8 @@ class UserLogin(szumu.web.Controller):
             remote_ip = self.request.remote_ip
             log_time = time.strftime('%Y-%m-%d %H:%I:%S',
                                      time.localtime(time.time()))
-            token = model.User._make_token(Config.get_token_salt(),
-                                           remote_ip, log_time)
+            token_salt = self.application.config['token_salt']
+            token = model.User._make_token(token_salt, remote_ip, log_time)
             current_user.update_log_time(log_time)
             current_user.update_token(token)
             current_user.update_log_ip(remote_ip)

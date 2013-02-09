@@ -6,7 +6,7 @@ Created on 2012-8-16
 '''
 
 from szumu.building.BaseBuilding import BaseBuilding
-from szumu.config.buildingConfig import buildingConfig
+from szumu.config import buildings
 from szumu.database import DbMaster
 
 
@@ -52,7 +52,7 @@ class SpecialBuilding(BaseBuilding):
 class Office(SpecialBuilding):
     ''' 办公楼 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_office)
+        self.get_infor(buildings.OFFICE)
 
     def get_announce(self):
         pass
@@ -61,19 +61,19 @@ class Office(SpecialBuilding):
 class StudentCenter(SpecialBuilding):
     ''' 学生活动中心 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_student_center)
+        self.get_infor(buildings.STUDENT_CENTER)
 
 
 class Stone(SpecialBuilding):
     ''' 石头邬 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_stone)
+        self.get_infor(buildings.STONE)
 
 
 class TechBuilding(SpecialBuilding):
     ''' 科技楼 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_tech)
+        self.get_infor(buildings.TECH)
 
 
 class TeachingBuilding(SpecialBuilding):
@@ -117,10 +117,10 @@ class TeachingBuilding(SpecialBuilding):
         35:中国经济特区研究中心
     '''
 
-    college_no = buildingConfig.szumu_building_teach_college_no
+    college_no = buildings.TEACH_COLLEGE_NO
 
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_teach)
+        self.get_infor(buildings.TEACH)
 
     @staticmethod
     def get_course_infor(id):
@@ -165,25 +165,25 @@ class TeachingBuilding(SpecialBuilding):
 class LiteraBuilding(SpecialBuilding):
     ''' 文科楼 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_litera)
+        self.get_infor(buildings.LITERA)
 
 
 class NorthLib(SpecialBuilding):
     ''' 北图书馆 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_north)
+        self.get_infor(buildings.NORTH)
 
 
 class SouthLib(SpecialBuilding):
     ''' 南图书馆 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_south)
+        self.get_infor(buildings.SOUTH)
 
 
 class Gym(SpecialBuilding):
     ''' 体育馆 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_gym)
+        self.get_infor(buildings.GYM)
 
 
 class Classroom(SpecialBuilding):
@@ -194,19 +194,19 @@ class Classroom(SpecialBuilding):
 class Dorm(SpecialBuilding):
     ''' 宿舍 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_dorm)
+        self.get_infor(buildings.DORM)
 
 
 class BeingBuilding(SpecialBuilding):
     ''' 正在建设 '''
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_beingBuilt)
+        self.get_infor(buildings.BEING_BUILT)
 
 
 class BeingRent(SpecialBuilding):
     """ 出租中 """
     def __init__(self):
-        self.get_infor(buildingConfig.szumu_building_rent)
+        self.get_infor(buildings.RENT)
 
     def createShop(self, id):
         shop = DbMaster.db.get("SELECT * FROM szu_mu_building WHERE "
