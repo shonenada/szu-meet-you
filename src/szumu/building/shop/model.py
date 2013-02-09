@@ -39,7 +39,7 @@ class Shop(BaseBuilding):
                                    self.descr, int(self.id))
 
     @staticmethod
-    def getCurrentUserShop(serid):
+    def getCurrentUserShop(userid):
         return DbMaster.db.get("SELECT * FROM `szu_mu_building` "
                                "WHERE `ownerid` = %s", userid)
 
@@ -52,7 +52,7 @@ class PrivateShop(Shop):
         return Aritcles.findByShopid(shopid)
 
     @staticmethod
-    def find(db, id):
+    def find(id):
         if not id:
             return None
         return DbMaster.db.get("SELECT * FROM `szu_mu_building` WHERE id = %s "

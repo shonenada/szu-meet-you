@@ -17,7 +17,7 @@ class CurrentUserShop(szumu.web.Controller):
         if not current_user:
             raise httperror(403)
         current_user = current_user.as_array()
-        user_shop = Shop.getCurrentUserShop(self.db, current_user['id'])
+        user_shop = Shop.getCurrentUserShop(current_user['id'])
         if not user_shop:
             self.write("您未申请店铺")
         else:

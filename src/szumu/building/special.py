@@ -148,7 +148,7 @@ class TeachingBuilding(SpecialBuilding):
             return None
         if not number:
             return None
-        return DbMaster.db.query("SELECT * FROM `szu_mu_stuselect` WHERE"
+        return DbMaster.db.query("SELECT * FROM `szu_mu_stuselect` WHERE "
                                  "truename = %s and number = %s",
                                  truename, number)
 
@@ -158,7 +158,7 @@ class TeachingBuilding(SpecialBuilding):
             return None
         if not classid:
             return None
-        return DbMaster.db.query("SELECT * FROM `szu_mu_stuselect`"
+        return DbMaster.db.query("SELECT * FROM `szu_mu_stuselect` "
                                  "WHERE cid = %s", classid)
 
 
@@ -209,7 +209,7 @@ class BeingRent(SpecialBuilding):
         self.get_infor(buildingConfig.szumu_building_rent)
 
     def createShop(self, id):
-        shop = DbMaster.db.get("SELECT * FROM szu_mu_building WHERE"
+        shop = DbMaster.db.get("SELECT * FROM szu_mu_building WHERE "
                                "id = %s AND special = 'rent'", int(id))
         self.id = shop['id']
         self.title = shop['title']
@@ -235,7 +235,7 @@ class BeingRent(SpecialBuilding):
     def find(id):
         if not id:
             return None
-        return DbMaster.db.get("SELECT * FROM szu_mu_building WHERE"
+        return DbMaster.db.get("SELECT * FROM szu_mu_building WHERE "
                                "id = %s AND special = 'rent'", int(id))
 
 
@@ -292,5 +292,5 @@ class ClassComment():
     def get_comment_by_classid(classid):
         if not classid:
             return None
-        return DbMaster.db.query('SELECT * FROM `szu_mu_class_comment` WHERE'
+        return DbMaster.db.query('SELECT * FROM `szu_mu_class_comment` WHERE '
                                  'classid = %s ORDER BY id DESC', classid)

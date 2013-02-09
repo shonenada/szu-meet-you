@@ -8,6 +8,7 @@ from szumu.web import json_encode
 from szumu.users import model
 from szumu.base import route
 from szumu.building import special
+from szumu.building.shop import model as ShopModel
 
 
 @route(r"/office/student/reg")
@@ -88,9 +89,7 @@ class OfficePage(BuildingHandler):
         if user:
             user = user.as_array()
         self.render('buildings/office.html',
-                    title=self.title,                    descr=self.descr,
-                    user=user,
-                    )
+                    title=self.title, descr=self.descr, user=user)
 
     def post(self):
         raise httperror(404, 'Not Found')
