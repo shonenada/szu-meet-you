@@ -14,7 +14,6 @@ from szumu.base import route
 class UserSignUp(szumu.web.Controller):
 
     def get(self):
-        """ Rewrite the get method """
         self.check_whether_logged()
         self.render('auth/reg.html')
 

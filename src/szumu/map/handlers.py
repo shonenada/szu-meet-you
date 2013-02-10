@@ -5,9 +5,8 @@ from szumu.base import route
 import szumu.chat.handlers
 import szumu.web
 from szumu.map.model import Map
-from szumu.building.BaseBuilding import BaseBuilding
+from szumu.building.base import BaseBuilding
 from szumu.building.special import *
-from szumu.building.shop.model import Shop
 from szumu.config import buildings as builds
 
 

@@ -5,7 +5,7 @@ Created on 2012-8-16
 @author: Lyd
 '''
 
-from szumu.building.BaseBuilding import BaseBuilding
+from szumu.building.base import BaseBuilding
 from szumu.config import buildings
 from szumu.database import DbMaster
 

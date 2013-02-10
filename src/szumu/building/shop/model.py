@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 from szumu.database import DbMaster
-from szumu.building.BaseBuilding import BaseBuilding
+from szumu.building.base import BaseBuilding
 from szumu.articles.model import Aritcles
 
 
