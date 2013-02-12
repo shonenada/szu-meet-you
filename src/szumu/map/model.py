@@ -1,49 +1,31 @@
-#!/usr/bin/env python
+#/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-from szumu.database import DbMaster, db
+from sqlalchemy import Table, Column, Integer, String, DateTime, Float
+from sqlalchemy.orm import mapper, Session
+
+from szumu.database import metadata
 
 
-class Map():
-    """ The model of Map information """
+session = Session()
 
-    mid = None
-    title = None
-    descr = None
-    path = [0, 0, 0, 0]
-    # up right down left
-    link = [None, None, None, None]
-    # up right down left
-    buildings = {0: None,
-                 1: None,
-                 2: None,
-                 3: None,
-                 4: None,
-                 5: None,
-                 6: None,
-                 7: None,
-                 8: None,
-                 9: None,
-                 10: None,
-                 11: None,
-                 12: None,
-                 13: None,
-                 14: None}
-    created = None
 
-    def __init__(self, title, descr=None, path=[], link=[], buildings={}):
+class Map(object):
+
+    def __init__(self, title, descr=None):
         self.title = title
         self.descr = descr
-        self.path = path
-        self.link = link
-        self.buildings = buildings
 
-    @staticmethod
-    def find(id):
-        query = DbMaster.db.get("SELECT * FROM szu_mu_map WHERE id = %s", id)
-        if not query:
-            return None
-        map = Map(query['title'], query['descr'], query['path'],
-                  query['link'], query['buildings'])
-        map.mid = id
-        return map
+
+map_table = Table('map', metadata,
+                  Column('id', Integer, primary_key=True),
+                  Column('title', String(250)),
+                  Column('descr', String),
+                  Column('path', String(8)),
+                  Column('link', String(47)),
+                  Column('buildings', String),
+                  Column('created', DateTime)
+                  )
+
+
+mapper(Map, map_table)

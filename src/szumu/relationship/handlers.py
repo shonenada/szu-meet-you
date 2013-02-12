@@ -25,7 +25,7 @@ class NewRelationship(szumu.web.Controller):
         user = user.as_array()
         userid = user['id']
         relation = model.RelationShip(userid, friendid,
-                                      model.RelationShip.relationship_focus)
+                                      model.RelationShip.FOCUS)
         relation.save()
         self.finish(json_encode({'success': True}))
 
@@ -46,6 +46,6 @@ class RemoveRelationship(szumu.web.Controller):
         user = user.as_array()
         userid = user['id']
         relation = model.RelationShip(userid, friendid,
-                                      model.RelationShip.relationship_focus)
+                                      model.RelationShip.FOCUS)
         relation.remove()
         self.finish(json_encode({'success': True}))
