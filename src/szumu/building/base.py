@@ -5,45 +5,46 @@ Created on 2012-8-16
 
 @author: Lyd
 '''
+from sqlalchemy import Table, Column, Integer, String, DateTime, Float
+from sqlalchemy.orm import mapper, Session
 
 from szumu.database import DbMaster
 
 
-db = DbMaster.db
+metadata = DbMaster.metadata
+session = Session()
 
 
-class BaseBuilding():
-    ''' 基础建筑物 '''
-    """
-        Columns:
-            1# id
-            2# title
-            3# ownerid
-            4# pic
-            5# mapid
-            6# mapsite
-            7# descr
-            8# sepcial
-            9# created
-    """
-
-    id = None
-    title = None
-    ownerid = None
-    pic = None
-    mapid = None
-    mapsite = None
-    descr = None
-    special = None
-    created = None
+class BaseBuilding(object):
 
     def __init__(self, title):
         self.title = title
 
-    @staticmethod
-    def find(id):
-        if not id or id == 'None':
-            return None
-        else:
-            sql = "SELECT * FROM szu_mu_building WHERE `id` = %s"
-            return DbMaster.db.get(sql, int(id))
+
+    def tostring(self):
+        return {'title': self.title,
+                'ownerid': self.ownerid,
+                'pic': self.pic,
+                'mapid': self.mapid,
+                'mapsite': self.mapsite,
+                'color': self.color,
+                'descr': self.descr,
+                'special': self.special,
+                }
+
+
+building_table = Table('buildings', metadata,
+                       Column('id', Integer, primary_key=True),
+                       Column('title', String(250)),
+                       Column('ownerid', Integer),
+                       Column('mapid', Integer),
+                       Column('mapside', Integer),
+                       Column('pic', String(250), default='nopic.jpg'),
+                       Column('color', String(30), default='brown'),
+                       Column('descr', String),
+                       Column('special', String),
+                       Column('created', DateTime)
+                       )
+
+
+mapper(BaseBuilding, building_table)

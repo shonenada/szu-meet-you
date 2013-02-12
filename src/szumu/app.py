@@ -8,25 +8,25 @@ import tornado.options
 import tornado.web
 
 from szumu.base import Application
-from szumu.database import DbMaster
-from szumu.modules import modules
+from szumu.database import dbmaster
 
 
-def get_app_root():
+def app_root():
     app_root = os.path.dirname(os.path.realpath(__file__)) + "/"
     return app_root
 
 
 def create_app(config_file):
-    app = Application(modules)
-
-    app.load_route()
+    app = Application()
 
     app.load_config_from_file(config_file)
-    app.load_config_from_file(get_app_root() + "settings.py")
+    app.load_config_from_file(app_root() + "settings.py")
 
-    dbmaster = DbMaster()
     dbmaster.init_app(app)
+
+    from szumu.modules import modules
+    app.init_modules(modules)
+    app.load_route()
 
     app.deploy()
 

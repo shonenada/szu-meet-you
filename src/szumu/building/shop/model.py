@@ -1,12 +1,16 @@
 #!/usr/bin/evn python
 #-*- coding: utf-8 -*-
 
+from sqlalchemy import Table, Column, Integer, String
+from sqlalchemy.orm import mapper, Session
+
 from szumu.database import DbMaster
 from szumu.building.base import BaseBuilding
-from szumu.articles.model import Aritcles
+from szumu.article.model import Aritcle
 
 
-db = DbMaster.db
+metadata = DbMaster.metadata
+session = Session()
 
 
 class Shop(BaseBuilding):

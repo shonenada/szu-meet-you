@@ -6,7 +6,7 @@ import tornado.web
 
 import szumu.web
 from szumu.web import json_encode
-from szumu.users import model
+from szumu.user.model import User
 from szumu.base import route
 
 

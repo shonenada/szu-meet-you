@@ -117,14 +117,14 @@ DORM = {'title': '学生宿舍',
         'special': 'dorm'}
 
 
-BEINGBUILT = {'title': '正在建设',
-              'ownerid': 0,
-              'pic': None,
-              'mapid': 0,
-              'mapsite': 0,
-              'descr': '正在建设...',
-              'color': 'brown',
-              'special': 'beingBuilt'}
+BEING_BUILT = {'title': '正在建设',
+               'ownerid': 0,
+               'pic': None,
+               'mapid': 0,
+               'mapsite': 0,
+               'descr': '正在建设...',
+               'color': 'brown',
+               'special': 'beingBuilt'}
 
 
 """店铺类型"""

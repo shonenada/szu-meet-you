@@ -12,6 +12,9 @@ class Application(tornado.web.Application):
         self.modules = modules
         self.config = config
 
+    def init_modules(self, modules=[]):
+        self.modules = modules
+
     def load_route(self):
         for module in self.modules:
             handler = (module.url, module)

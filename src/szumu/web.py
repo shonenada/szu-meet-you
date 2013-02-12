@@ -6,8 +6,7 @@ from datetime import date, datetime
 
 import tornado
 
-from szumu.database import DbMaster
-from szumu.users import model
+from szumu.user.services import find
 
 
 httperror = tornado.web.HTTPError
@@ -36,24 +35,5 @@ class Controller(tornado.web.RequestHandler):
             user_id = self.get_secure_cookie('userinfor')
         if not user_id or user_id is None:
             return None
-        user = DbMaster.db.get("SELECT * FROM szu_mu_user WHERE id = %s ",
-                               int(user_id))
-        return model.User(user['username'], user['password'], user['nickname'],
-                          user['gender'], self.request.remote_ip)
-
-    def check_whether_logged(self):
-        user = self.get_current_user()
-        if not user is None:
-            self.redirect('/home')
-
-    def check_whether_finish_truename_and_number(self):
-        user = self.get_current_user()
-        if not user:
-            raise httperror(403)
-        user = user.as_array()
-        truename = user['truename']
-        number = user['number']
-        if not truename:
-            raise httperror(403, 'Please input your truename')
-        if not number:
-            raise httperror(403, 'Please input your number')
+        user = find(user_id)
+        return user

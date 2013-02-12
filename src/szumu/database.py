@@ -1,23 +1,27 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-from tornado.database import Connection
+from datetime import datetime
+
+from sqlalchemy import create_engine, MetaData
 
 
 class DbMaster():
 
-    db = None
+    engine = None
+    metadata = None
 
-    def init_app(self, app):
+    def init_app(self, app, connect=True):
         self.app = app
-        self.connect()
+        if connect:
+            self.connect()
 
     def connect(self):
-        self.db = Connection(host=self.app.config['db_host'],
-                             database=self.app.config['db_name'],
-                             user=self.app.config['db_user'],
-                             password=self.app.config['db_pass'])
-        DbMaster.db = self.db
+        self.engine = create_engine(self.app.config['db_uri'])
+        self.metadata = MetaData(self.engine)
+        DbMaster.engine = self.engine
+        DbMaster.metadata = self.metadata
 
 
-db = DbMaster.db
+dbmaster = DbMaster()
+metadata = DbMaster.metadata
