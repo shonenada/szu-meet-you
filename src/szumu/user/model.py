@@ -8,9 +8,10 @@ import tornado
 from sqlalchemy import Table, Column, Integer, String, DateTime, Float
 from sqlalchemy.orm import mapper, Session
 
-from szumu.database import metadata
+from szumu.database import DbMaster
 
 
+metadata = DbMaster.metadata
 session = Session()
 
 
@@ -78,5 +79,5 @@ user_table = Table('users', metadata,
                    Column('state', Integer, default=1),
                    Column('trash', Integer, default=0),
                    )
-
+    
 mapper(User, user_table)

@@ -8,16 +8,29 @@ Created on 2012-8-16
 from sqlalchemy import Table, Column, Integer, String, DateTime, Float
 from sqlalchemy.orm import mapper, Session
 
-from szumu.database import metadata
+from szumu.database import DbMaster
 
 
+metadata = DbMaster.metadata
 session = Session()
 
 
-class BaseBuilding():
+class BaseBuilding(object):
 
     def __init__(self, title):
         self.title = title
+
+
+    def tostring(self):
+        return {'title': self.title,
+                'ownerid': self.ownerid,
+                'pic': self.pic,
+                'mapid': self.mapid,
+                'mapsite': self.mapsite,
+                'color': self.color,
+                'descr': self.descr,
+                'special': self.special,
+                }
 
 
 building_table = Table('buildings', metadata,

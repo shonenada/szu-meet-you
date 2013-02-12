@@ -9,7 +9,6 @@ import tornado.web
 
 from szumu.base import Application
 from szumu.database import dbmaster
-from szumu.modules import modules
 
 
 def app_root():
@@ -18,14 +17,16 @@ def app_root():
 
 
 def create_app(config_file):
-    app = Application(modules)
-
-    app.load_route()
+    app = Application()
 
     app.load_config_from_file(config_file)
     app.load_config_from_file(app_root() + "settings.py")
 
     dbmaster.init_app(app)
+
+    from szumu.modules import modules
+    app.init_modules(modules)
+    app.load_route()
 
     app.deploy()
 

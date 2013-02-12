@@ -5,7 +5,7 @@ import tornado.web
 
 import szumu.web
 from szumu.web import json_encode
-from szumu.users import model
+from szumu.user import model
 from szumu.base import route
 from szumu.building import special
 from szumu.building.shop import model as ShopModel

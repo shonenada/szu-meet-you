@@ -1,12 +1,12 @@
 #/usr/bin/env python
 from szumu.master.handlers import Home, AboutUs, ContactUs
-from szumu.users.handlers import (UserSignUp, UserLogout, UserLogin, MyHome,
+from szumu.user.handlers import (UserSignUp, UserLogout, UserLogin, MyHome,
                                   Profile, UserInfor)
 from szumu.building.handlers import (Office, OfficePage, Teach, ClassMate,
                                      GetClassComment, NewClassComment, Tech,
                                      Rent, Shop, EditShop, NewPrivateArticle)
 from szumu.relationship.handlers import NewRelationship, RemoveRelationship
-from szumu.msg.handlers import CheckMsg, GetMsg, DelMsg, SendMsg
+from szumu.message.handlers import CheckMsg, GetMsg, DelMsg, SendMsg
 from szumu.map.handlers import MapHandler, ViewLastMap
 from szumu.chat.handlers import ChatPage, ChatMessage
 from szumu.building.shop.handlers import CurrentUserShop
