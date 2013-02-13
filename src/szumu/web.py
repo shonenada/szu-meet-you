@@ -5,13 +5,9 @@ import json
 from datetime import date, datetime
 
 import tornado
+import tornado.web
 
 from szumu.user.services import find
-
-
-httperror = tornado.web.HTTPError
-asynchronous = tornado.web.asynchronous
-auth = tornado.web.authenticated
 
 
 def __default(obj):
@@ -37,3 +33,20 @@ class Controller(tornado.web.RequestHandler):
             return None
         user = find(user_id)
         return user
+
+    def check_whether_logged(self):
+        user = self.get_current_user()
+        if not user is None:
+            self.redirect('/')
+
+    def check_whether_finish_truename_and_number(self):
+        user = self.get_current_user()
+        if not user:
+            raise tornado.web.HTTPError(403)
+        truename = user.truename
+        number = user.number
+        if not truename:
+            raise httperror(403, 'Please input your truename')
+        if not number:
+            raise httperror(403, 'Please input your number')
+            

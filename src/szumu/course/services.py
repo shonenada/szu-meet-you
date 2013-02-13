@@ -66,7 +66,7 @@ def save_comment(comment):
         return True
 
 
-def get_stu_select_by_truename_and_number(truename, number):
+def get_stu_select_by_name_and_number(truename, number):
     if truename is None or number is None:
         return None
     query_stu_select = (stuselect_query.filter_by(truename=truename)

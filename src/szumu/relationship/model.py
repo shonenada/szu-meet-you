@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-import datetime
+from datetime import datetime
 
 import tornado
 from sqlalchemy import Table, Column, Integer, DateTime
 from sqlalchemy.orm import mapper, Session
 
-from szumu.database import metadata
+from szumu.database import DbMaster
 
 
 session = Session()
+metadata = DbMaster.metadata
 
 
 class RelationShip(object):

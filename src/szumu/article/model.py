@@ -6,7 +6,7 @@ Created on 2012-10-2
 '''
 from datetime import datetime
 
-from sqlalchemy import Table, Column, Integer, String, DateTime
+from sqlalchemy import Table, Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import mapper, Session
 
 from szumu.database import DbMaster
@@ -26,7 +26,7 @@ class Aritcle(object):
 article_table = Table('articles', metadata,
                       Column('id', Integer, primary_key=True),
                       Column('title', String(250)),
-                      Column('content', String),
+                      Column('content', Text),
                       Column('author', Integer),
                       Column('shopid', Integer),
                       Column('special', String(50)),

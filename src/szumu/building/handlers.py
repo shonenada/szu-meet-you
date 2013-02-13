@@ -3,19 +3,21 @@
 
 import tornado.web
 
-import szumu.web
-from szumu.web import json_encode
-from szumu.user import model
 from szumu.base import route
+from szumu.web import json_encode, Controller
+from szumu.user.model import User
+from szumu.user import services as user_services
 from szumu.building import special
 from szumu.building.shop import model as ShopModel
+from szumu.course.model import Comment
+from szumu.course import services as course_services
 
 
 @route(r"/office/student/reg")
-class Office(szumu.web.Controller):
+class Office(Controller):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self):
@@ -69,9 +71,8 @@ class Office(szumu.web.Controller):
         self.finish({'success': success, 'message': message})
 
 
-class BuildingHandler(szumu.web.Controller):
+class BuildingHandler(Controller):
     def get_infor(self, special):
-        special = special()
         self.title = special.title
         self.ownerid = special.ownerid
         self.pic = special.pic
@@ -84,15 +85,13 @@ class BuildingHandler(szumu.web.Controller):
 @route("/office")
 class OfficePage(BuildingHandler):
     def get(self):
-        self.get_infor(special.Office)
+        self.get_infor(special.office)
         user = self.get_current_user()
-        if user:
-            user = user.as_array()
         self.render('buildings/office.html',
                     title=self.title, descr=self.descr, user=user)
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 @route(r"/teach")
@@ -101,96 +100,113 @@ class Teach(BuildingHandler):
     def get(self):
         self.check_whether_finish_truename_and_number()
         user = self.get_current_user()
-        user = user.as_array()
-        truename = user['truename']
-        number = user['number']
-        course = (special.TeachingBuilding
-                  .get_class_infor_by_truename_and_number(truename, number))
+        truename = user.truename
+        number = user.number
+        courses = (course_services.get_stu_select_by_name_and_number(truename,
+                                                                    number))
         classes = []
-        for x in course:
-            (classes.append(special.TeachingBuilding
-             .get_course_infor_by_classid(x['cid'])))
+        if not courses is None:
+            for course in courses:
+                classes.append(course_services.find(course.cid))
+
         self.render('buildings/teach.html',
-                    user=user, course=course, classes=classes,
-                    college_no=special.TeachingBuilding.college_no)
+                    user=user, course=courses, classes=classes,
+                    college_no=special.teach.college_no)
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 @route(r"/teach/mate/classid/([0-9]+)")
-class ClassMate(szumu.web.Controller):
+class ClassMate(Controller):
     @tornado.web.authenticated
     def get(self, classid):
         self.check_whether_finish_truename_and_number()
         user = self.get_current_user()
         username = user.username
-        classes = special.TeachingBuilding.get_class_infor_by_classid(classid)
+        classes = course_services.find(classid)
         classinfor = []
-        for x in classes:
-            checked_name = UserModel.check_truename(x['truename'], username)
-            checked_number = UserModel.check_number(x['number'], username)
+        if classes is None:
+            self.finish(json_encode({}))
+        for one in classes:
+            name = one.truename
+            number = one.number
+            checked_name = user_services.is_truename_existed(name,
+                                                             username)
+            checked_number = user_services.is_number_existed(number,
+                                                             username)
             if (checked_name and checked_number):
-                mate = UserModel.get_user_by_truename_and_number(x['truename'],
-                                                                 x['number'])
-                picurl = md5("AvatarUrl:"+str(mate['id'])).hexdigest()
+                mate = user_services.get_user_by_name_and_number(name, number)
+                picurl = md5("AvatarUrl:"+str(mate.id)).hexdigest()
                 file_path = '/static/upfiles/avatar/' + picurl + '.png'
                 if not os.path.isfile(file_path):
                     if mate['gender'] == 1:
                         picurl = 'male_big'
                     else:
                         picurl = 'female_big'
-                classinfor.append({'id': mate['id'],
-                                   'nickname': mate['nickname'],
+                classinfor.append({'id': mate.id,
+                                   'nickname': mate.nickname,
                                    'pic': picurl})
+
         self.finish(json_encode(classinfor))
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 @route(r"/teach/comment/classid/([0-9]+)")
-class GetClassComment(szumu.web.Controller):
+class GetClassComment(Controller):
     @tornado.web.authenticated
     def get(self, classid):
         self.check_whether_finish_truename_and_number()
+        
         user = self.get_current_user()
+
         username = user.username
-        comment = special.ClassComment.get_comment_by_classid(classid)
-        for x in comment:
-            u = UserModel.get_user_by_id(x['userid'])
-            x['nickname'] = u['nickname']
-        self.finish(json_encode(comment))
+        comments = course_services.find_by_classid(classid)
+
+        if not comments is None:
+            for comment in comments:
+                u = user_services.find(comment.userid)
+                comment.nickname = u.nickname
+
+        self.finish(json_encode(comments))
 
     @tornado.web.authenticated
     def post(self, classid):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 @route(r"/teach/comment/new")
-class NewClassComment(szumu.web.Controller):
+class NewClassComment(Controller):
     @tornado.web.authenticated
     def get(self, classid):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self):
         self.check_whether_finish_truename_and_number()
+
         classid = self.get_argument('classid', None)
         content = self.get_argument('comment', None)
+
         user = self.get_current_user()
-        user = user.as_array()
+
         success = True
         messages = []
+
         if not classid:
             success = False
             messages.append('获取课程信息出错')
+
         if not content:
             success = False
             messages.append('评论不能为空')
+
         if success:
-            comment = special.ClassComment(classid, user['id'], content)
-            comment.save()
+            comment = Comment(classid, user.id, content)
+            course_services.save_comment(comment)
+    
         self.finish(json_encode({'success': success, 'messages': messages}))
 
 
@@ -200,7 +216,7 @@ class Tech(BuildingHandler):
         pass
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 class StudentHandler(BuildingHandler):
@@ -208,7 +224,7 @@ class StudentHandler(BuildingHandler):
         pass
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 class StoneHandler(BuildingHandler):
@@ -216,7 +232,7 @@ class StoneHandler(BuildingHandler):
         pass
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 class NorthHandler(BuildingHandler):
@@ -224,7 +240,7 @@ class NorthHandler(BuildingHandler):
         pass
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 class SouthHandler(BuildingHandler):
@@ -232,7 +248,7 @@ class SouthHandler(BuildingHandler):
         pass
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 class GymHandler(BuildingHandler):
@@ -240,7 +256,7 @@ class GymHandler(BuildingHandler):
         pass
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 class LiteraHandler(BuildingHandler):
@@ -248,7 +264,7 @@ class LiteraHandler(BuildingHandler):
         pass
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 class DormHandler(BuildingHandler):
@@ -256,7 +272,7 @@ class DormHandler(BuildingHandler):
         pass
 
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 @route(r"/rent/([0-9]+)")
@@ -265,7 +281,7 @@ class Rent(BuildingHandler):
     def get(self, id):
         self.check_whether_finish_truename_and_number()
         if not id:
-            raise httperror(404, 'Not Found')
+            raise tornado.web.HTTPError(405)
         house = special.BeingRent.find(id)
         self.render('buildings/rent.html', house=house,
                     rentType=buildings.RENT_TYPE)

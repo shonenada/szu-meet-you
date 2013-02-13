@@ -8,7 +8,7 @@ import tornado.options
 import tornado.web
 
 from szumu.base import Application
-from szumu.database import dbmaster
+from szumu.database import DbMaster, dbmaster
 
 
 def app_root():

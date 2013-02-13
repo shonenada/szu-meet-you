@@ -5,7 +5,7 @@ from hashlib import md5
 from datetime import datetime
 
 import tornado
-from sqlalchemy import Table, Column, Integer, String, DateTime, Float
+from sqlalchemy import Table, Column, Integer, String, DateTime
 from sqlalchemy.orm import mapper, Session
 
 from szumu.database import DbMaster
@@ -35,7 +35,7 @@ class User(object):
 
     def hash_password(self, raw_password):
         """hash_password"""
-        self.hashed_password = self._hash_password(self.SALT, raw_password)
+        self.hashed_password = self.hash_string(self.SALT, raw_password)
 
     def update_log_time(self, log_time=datetime.utcnow()):
         """Update last log time"""
@@ -55,6 +55,11 @@ class User(object):
         self.token = token
         session.commit()
 
+    def update_log_infor(self, token, ip, log_time):
+        self.update_token(token)
+        self.update_log_ip(ip)
+        self.update_log_time(log_time)
+
     @staticmethod
     def _make_token(salt, ip, auth_time):
         return md5("<%s,%s|%s>" % (salt, ip, auth_time)).hexdigest()
@@ -73,9 +78,9 @@ user_table = Table('users', metadata,
                    Column('birthday', DateTime),
                    Column('qq', String(15)),
                    Column('created', DateTime, default=datetime.now),
-                   Column('reg_ip', String),
+                   Column('reg_ip', String(128)),
                    Column('last_log_time', DateTime),
-                   Column('last_log_ip', String),
+                   Column('last_log_ip', String(128)),
                    Column('state', Integer, default=1),
                    Column('trash', Integer, default=0),
                    )

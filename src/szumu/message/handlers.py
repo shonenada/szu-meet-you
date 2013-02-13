@@ -3,104 +3,105 @@
 
 import tornado.web
 
-import szumu.web
-from szumu.web import json_encode
-from szumu.user import model
+from szumu.web import json_encode, Controller
+from szumu.user.model import User
+from szumu.user import services as user_services
+from szumu.message.model import Message
+from szumu.message import services as msg_services
 from szumu.base import route
 
 
 @route("/account/msg/check")
-class CheckMsg(szumu.web.Controller):
+class CheckMsg(Controller):
 
     @tornado.web.authenticated
     def get(self):
         user = self.get_current_user()
-        user = user.as_array()
-        userid = user['id']
-        msg = model.Message.check_ones_msg(userid)
-        if not msg:
-            self.finish(json_encode({'newMsg': False}))
-        else:
-            if len(msg) < 10:
-                self.finish(json_encode({'newMsg': True, 'num': len(msg)}))
+        userid = user.id
+        have_new_msg = msg_services.check_new_msg(userid)
+        if have_new_msg:
+            msgs = msg_services.get_ones_receive_msg(userid)
+            if len(msgs) < 10:
+                self.finish(json_encode({'new_msg': True, 'num': len(msgs)}))
             else:
-                self.finish(json_encode({'newMsg': True, 'num': 'N'}))
+                self.finish(json_encode({'new_msg': True, 'num': 'N'}))
+        else:
+            self.finish(json_encode({'new_msg': False}))
+
 
     @tornado.web.authenticated
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 @route(r"/account/msg/get/(send|receive)/")
-class GetMsg(szumu.web.Controller):
+class GetMsg(Controller):
 
     @tornado.web.authenticated
     def get(self, type):
         pageid = self.get_argument('page', 1)
         user = self.get_current_user()
-        user = user.as_array()
-        userid = user['id']
+        userid = user.id
         if (type == 'send'):
-            msg = model.Message.get_ones_send_msg(userid)
-            if msg:
-                for x in msg:
-                    man = model.User.get_user_by_id(x['toid'])
-                    x['man'] = man['nickname']
+            msgs = msg_services.get_ones_send_msg(userid)
+            if msgs:
+                for msg in msgs:
+                    man = user_services.find(msg.toid)
+                    msg.man = man.nickname
         if (type == 'receive'):
-            msg = model.Message.get_ones_receive_msg(userid)
-            if msg:
-                for x in msg:
-                    man = model.User.get_user_by_id(x['fromid'])
-                    x['man'] = man['nickname']
+            msgs = msg_services.get_ones_receive_msg(userid)
+            if msgs:
+                for msg in msgs:
+                    man = user_services.find(msg.fromid)
+                    msg.man = man.nickname
 
-        model.Message.updateMsgState(userid)
+        msg_services.set_all_readed(userid)
 
-        self.finish(json_encode(msg))
+        self.finish(json_encode(msgs))
 
     @tornado.web.authenticated
     def post(self, type):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
 
 @route(r"/account/msg/del/(send|receive)")
-class DelMsg(szumu.web.Controller):
+class DelMsg(Controller):
 
     @tornado.web.authenticated
     def get(self, kind):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self, kind):
-        delid = self.get_arguments('delid', None)
-        if not delid:
+        del_ids = self.get_arguments('delid', None)
+        if not del_ids:
             self.finish(json_encode({'success': False,
                                      'message': '您未选择需删除的私信'}))
 
         user = self.get_current_user()
-        user = user.as_array()
-        userid = user['id']
+        userid = user.id
 
         if kind == 'send':
-            for x in delid:
-                msg = model.Message.find_msgob_by_id(x)
+            for id in del_ids:
+                msg = msg_services.find(id)
                 if msg.fromid == user.id:
                     msg.hide_by_from()
 
         if kind == 'receive':
-            for x in delid:
-                msg = model.Message.find_msgob_by_id(x)
+            for id in del_ids:
+                msg = msg_services.find(id)
                 if msg.toid == userid:
                     msg.hide_by_to()
 
         self.finish(json_encode({'success': True,
-                                 'delID': delid}))
+                                 'delID': del_ids}))
 
 
 @route(r"/account/msg/send")
-class SendMsg(szumu.web.Controller):
+class SendMsg(Controller):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self):
@@ -123,15 +124,15 @@ class SendMsg(szumu.web.Controller):
 
 
 @route(r"/account/msg/re")
-class ReMsg(szumu.web.Controller):
+class ReMsg(Controller):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self):
-        msgid = self.get_argument('msg_id', None)
-        if not msgid:
+        msg_id = self.get_argument('msg_id', None)
+        if not msg_id:
             self.finish(json_encode({'success': False,
                                      'message': '您未选择需回复的私信'}))
 
@@ -140,15 +141,14 @@ class ReMsg(szumu.web.Controller):
             self.finish(json_encode({'success': False,
                                      'message': '请输入回复的内容'}))
 
-        tomsg = model.Message.find_msgob_by_id(msgid)
-        if not tomsg:
+        to_msg = msg_services.find(msg_id)
+        if not to_msg:
             self.finish(json_encode({'success': False,
                                      'message': '您所回复的私信不存在'}))
 
-        toid = tomsg.fromid
+        toid = to_msg.fromid
         user = self.get_current_user()
-        user = user.as_array()
-        userid = user['id']
-        remsg = model.Message(userid, toid, content)
-        remsg.save()
+        userid = user.id
+        remsg = Message(userid, toid, content)
+        msg_services.save_msg(remsg)
         self.finish(json_encode({'success': True}))

@@ -1,7 +1,8 @@
 #/usr/bin/env python
 #-*- coding: utf-8 -*-
+from datetime import datetime
 
-from sqlalchemy import Table, Column, Integer, String, DateTime, Float
+from sqlalchemy import Table, Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import mapper, Session
 
 from szumu.database import DbMaster
@@ -21,11 +22,11 @@ class Map(object):
 map_table = Table('map', metadata,
                   Column('id', Integer, primary_key=True),
                   Column('title', String(250)),
-                  Column('descr', String),
+                  Column('descr', Text),
                   Column('path', String(8)),
                   Column('link', String(47)),
-                  Column('buildings', String),
-                  Column('created', DateTime)
+                  Column('buildings', Text),
+                  Column('created', DateTime, default=datetime.now)
                   )
 
 

@@ -5,7 +5,7 @@ Created on 2012-8-16
 
 @author: Lyd
 '''
-from sqlalchemy import Table, Column, Integer, String, DateTime, Float
+from sqlalchemy import Table, Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import mapper, Session
 
 from szumu.database import DbMaster
@@ -41,8 +41,8 @@ building_table = Table('buildings', metadata,
                        Column('mapside', Integer),
                        Column('pic', String(250), default='nopic.jpg'),
                        Column('color', String(30), default='brown'),
-                       Column('descr', String),
-                       Column('special', String),
+                       Column('descr', Text),
+                       Column('special', Text),
                        Column('created', DateTime)
                        )
 

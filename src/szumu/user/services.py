@@ -1,3 +1,4 @@
+﻿import tornado
 from sqlalchemy.orm import Session
 
 from szumu.user.model import User
@@ -73,18 +74,16 @@ def login_validate(username, raw_password):
 def find(user_id):
     """Get user by input user id"""
     if user_id is None:
-        return None
-    if not isinstance(user_id, int):
-        return None
+        raise tornado.web.HTTPError(404, 'user_id is None')
     count = query.filter_by(id=user_id).count()
     if count > 0:
         query_user = query.first()
-        return query
+        return query_user
     else:
         return None
 
 
-def get_user_by_truename_and_number(truename, number):
+def get_user_by_name_and_number(truename, number):
     """ remove? """
     if truename is None or number is None:
         return None
@@ -131,4 +130,14 @@ def reg_in_school(username):
         query_user.state = 3
         session.commit()
         return True
-    
+
+
+def get_id_by_username(username):
+    if username is None:
+        return None
+    else:
+        query_user = query.filter_by(username=username)
+        if query_user.count() > 0:
+            return query_user.first().id
+        else:
+            return None

@@ -1,13 +1,15 @@
 #/usr/bin/env python
 #-*- coding: utf-8 -*-
+from datetime import datetime
 
-from sqlalchemy import Table, Column, Integer, String, DateTime, Float
+from sqlalchemy import Table, Column, Integer, String, DateTime, Float, Text
 from sqlalchemy.orm import mapper, Session
 
-from szumu.database import metadata
+from szumu.database import DbMaster
 
 
 session = Session()
+metadata = DbMaster.metadata
 
 
 class Course(object):
@@ -61,8 +63,8 @@ comment_table = Table('comment', metadata,
                       Column('id', Integer, primary_key=True),
                       Column('classid', Integer),
                       Column('userid', Integer),
-                      Column('comment', String),
-                      Column('created', DateTime, default=datetime.now())
+                      Column('comment', Text),
+                      Column('created', DateTime, default=datetime.now)
                      )
 
 

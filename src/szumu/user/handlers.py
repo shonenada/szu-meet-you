@@ -4,57 +4,72 @@ import time
 
 import tornado.web
 
-import szumu.web
+from szumu.web import Controller
 from szumu.web import json_encode
-from szumu.user.model import User
 from szumu.base import route
-
+from szumu.user.model import User
+from szumu.user import services as user_services
 
 @route("/auth/reg")
-class UserSignUp(szumu.web.Controller):
+class UserSignUp(Controller):
 
     def get(self):
         self.check_whether_logged()
+
         self.render('auth/reg.html')
 
     def post(self):
         self.check_whether_logged()
-        username = unicode(self.get_argument("username")).strip()
-        password = unicode(self.get_argument("password")).strip()
-        nickname = unicode(self.get_argument("nickname")).strip()
-        gender = unicode(self.get_argument('gender', '1')).strip()
+
+        username = self.get_argument("username").strip()
+        password = self.get_argument("password").strip()
+        nickname = (self.get_argument("nickname").strip()).encode('utf-8')
+        gender = self.get_argument('gender', '1').strip()
+
         message = []
         success = True
+
         if not username or len(username) <= 0:
             success = False
             message.append('邮箱不能为空')
+
         if not password or len(password) <= 0:
             success = False
             message.append('密码不能为空')
+
         if len(password) < 6 or len(password) > 16:
             success = False
             message.append('密码长度有误，密码长度为6~16位')
+
         if not nickname or len(nickname) <= 0:
             success = False
             message.append('昵称不能为空 ')
-        if model.User.check_username_exist(username):
+
+        if user_services.is_username_existed(username):
             success = False
             message.append('邮箱已存在，请更换后重新注册')
-        if model.User.check_nickname_exist(nickname):
+
+        if user_services.is_nickname_existed(nickname):
             success = False
             message.append('昵称已存在，请更换后重新注册')
+
         if success:
             ip = self.request.remote_ip
-            user = model.User(username, password, nickname, gender, ip)
-            userid = user.create()
-            success = success and userid
+            user = User(username, password, nickname)
+            user.gender = gender
+            user.ip = ip
+            user_services.save_user(user)
+
+            userid = user_services.get_id_by_username(username)
+
             self.set_secure_cookie('userinfor', unicode(userid))
             self.set_secure_cookie('username', unicode(username))
+
         self.finish(json_encode({'success': success, 'message': message}))
 
 
 @route("/auth/login")
-class UserLogin(szumu.web.Controller):
+class UserLogin(Controller):
     def get(self):
         self.check_whether_logged()
         username = self.get_secure_cookie('username')
@@ -64,56 +79,67 @@ class UserLogin(szumu.web.Controller):
 
     def post(self):
         self.check_whether_logged()
-        username = unicode(self.get_argument("username")).strip()
-        password = unicode(self.get_argument("password")).strip()
+        username = self.get_argument("username").strip()
+        password = self.get_argument("password").strip()
         message = []
         success = True
+
         if not username or len(username) <= 0:
             message.append('邮箱不能用为')
             success = False
+
         if not password or len(password) <= 0:
             message.append('密码不能为空')
             success = False
+
         if len(password) < 6 or len(password) > 16:
             message.append('密码长度应为6~16位')
             success = False
-        userid = model.User.check_username_and_password(model.User.salt,
-                                                        username, password)
-        if not userid:
+
+        is_pass_login = user_services.login_validate(username, password)
+
+        if not is_pass_login:
             """ Log Failed """
             message.append('帐号或密码错误')
             success = False
+
         else:
             """ Log succeed """
             """ Update some information of the logged user """
+            userid = user_services.get_id_by_username(username)
+
             self.set_secure_cookie('userinfor', unicode(userid))
             self.set_secure_cookie('username', unicode(username))
-            current_user = self.get_current_user(unicode(userid))
+
+            current_user = user_services.find(userid)
+
             remote_ip = self.request.remote_ip
             log_time = time.strftime('%Y-%m-%d %H:%I:%S',
                                      time.localtime(time.time()))
+
             token_salt = self.application.config['token_salt']
-            token = model.User._make_token(token_salt, remote_ip, log_time)
-            current_user.update_log_time(log_time)
-            current_user.update_token(token)
-            current_user.update_log_ip(remote_ip)
+            token = User._make_token(token_salt, remote_ip, log_time)
+
+            current_user.update_log_infor(token, remote_ip, log_time)
+
             self.set_secure_cookie('token', token)
+            
         self.finish(json_encode({'success': success, 'message': message}))
 
 
 @route("/auth/logout")
-class UserLogout(szumu.web.Controller):
+class UserLogout(Controller):
 
     def get(self):
         self.clear_all_cookies()
         self.redirect('/')
 
     def post(self):
-        raise httperror(404, "Not Found")
+        raise tornado.web.HTTPError(405)
 
 
 @route('/home')
-class MyHome(szumu.web.Controller):
+class MyHome(Controller):
 
     @tornado.web.authenticated
     def get(self):
@@ -126,12 +152,10 @@ class MyHome(szumu.web.Controller):
 
 
 @route('/account/profile')
-class Profile(szumu.web.Controller):
+class Profile(Controller):
     @tornado.web.authenticated
     def get(self):
         current_user = self.get_current_user()
-        if current_user:
-            current_user = current_user.as_array()
         self.render('account/profile.html', user=current_user)
 
     @tornado.web.authenticated
@@ -140,14 +164,12 @@ class Profile(szumu.web.Controller):
 
         user = self.get_current_user()
 
-        nickname = self.get_argument('nickname', None)
+        nickname = (self.get_argument('nickname', None)).encode('utf-8')
         gender = self.get_argument('gender', None)
-        truename = self.get_argument('truename', None)
+        truename = (self.get_argument('truename', None)).encode('utf-8')
         number = self.get_argument('number', 0)
         college = self.get_argument('college', 0)
         birthday = self.get_argument('birthday', 0000-00-00)
-        phone = self.get_argument('phone', 0)
-        short = self.get_argument('short', 0)
         qq = self.get_argument('qq', 0)
 
         success = True
@@ -156,16 +178,15 @@ class Profile(szumu.web.Controller):
             success = False
             message.append('昵称不能为空')
 
-        if model.User.check_nickname_exist(nickname,
-                                           self.get_current_user().username):
+        if user_services.is_nickname_existed(nickname, user.username):
             success = False
             message.append('昵称已存在，请更换后重试')
 
-        if model.User.check_truename(truename, user.username):
+        if user_services.is_truename_existed(truename, user.username):
             success = False
             message.append('姓名已存在，若您未曾登记过信息，请联系站长')
 
-        if model.User.check_number(number, user.username):
+        if user_services.is_number_existed(number, user.username):
             success = False
             message.append('学号已存在，若您未曾登记过信息，请联系站长')
 
@@ -181,16 +202,14 @@ class Profile(szumu.web.Controller):
             current_user.number = number
             current_user.college = college
             current_user.birthday = birthday
-            current_user.phone = phone
-            current_user.shortPhone = short
             current_user.qq = qq
-            current_user.updateinfor()
+            user_services.update_user(current_user)
 
         self.finish(json_encode({'success': success, 'message': message}))
 
 
 @route(r'/account/userinfor/get/([0-9]+)')
-class UserInfor(szumu.web.Controller):
+class UserInfor(Controller):
     @tornado.web.authenticated
     def get(self, userid):
         user = self.get_current_user().as_array()
@@ -204,4 +223,4 @@ class UserInfor(szumu.web.Controller):
 
     @tornado.web.authenticated
     def post(self, userid):
-        raise httperror(404)
+        raise tornado.web.HTTPError(405)

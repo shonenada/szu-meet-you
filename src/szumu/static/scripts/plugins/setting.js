@@ -283,7 +283,7 @@ var checkMsg = function(){
 		async:true ,
 		dataType:'json',
 		success:function(response){
-				if( response.newMsg ){
+				if( response.new_msg ){
 					$("#msg-tips").html(response.num);
 					$("#msg-tips-s").html("（"+response.num+"）");
 					$("#msg-tips").show();

@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
+import tornado
 
-from szumu.base import route
 import szumu.chat.handlers
-import szumu.web
+from szumu.base import route
+from szumu.web import Controller
 from szumu.map.model import Map
+from szumu.map.services import find
 from szumu.building.base import BaseBuilding
 from szumu.building.special import *
 from szumu.config import buildings as builds
@@ -14,13 +16,12 @@ chat = szumu.chat.handlers.msgsrv
 
 
 @route(r"/map/([0-9]+)")
-class MapHandler(szumu.web.Controller):
+class MapHandler(Controller):
 
     def get(self, mapid):
-        mapid = unicode(mapid).strip()
-        map = Map.find(int(mapid))
-        if not map:
-            raise httperror(404, "Not Found")
+        map = find(int(mapid))
+        if map is None:
+            raise tornado.web.HTTPError(405)
 
         link = map.link.split(',')
         path = map.path.split(',')
@@ -38,9 +39,9 @@ class MapHandler(szumu.web.Controller):
                 buildings[i] = BaseBuilding.find(x)
             i = i + 1
 
-        current_user = self.get_current_user()
-        if not current_user is None:
-            current_user = current_user.as_array()
+        # current_user = self.get_current_user()
+        # if not current_user is None:
+        #     current_user = current_user.as_array()
 
         self.set_cookie('lastview', mapid)
 
@@ -52,17 +53,17 @@ class MapHandler(szumu.web.Controller):
                     buildings=buildings, msgs=chat.messages, special=special)
 
     def post(self):
-        raise httperror(403, "Forbidden")
+        raise tornado.web.HTTPError(405)
 
 
 @route(r"/map")
-class ViewLastMap(szumu.web.Controller):
+class ViewLastMap(Controller):
     def get(self):
         lastview = unicode(self.get_cookie('lastview'))
         if lastview:
             self.redirect('/map/' + lastview)
         else:
-            raise httperror(404, 'Not Found')
+            raise tornado.web.HTTPError(405)
 
     def post(self):
-        raise httperror(403, 'Forbidden')
+        raise tornado.web.HTTPError(405)
