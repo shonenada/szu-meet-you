@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
+import sys
+
 from datetime import datetime
 
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import Session
+
+
+reload(sys)
+sys.setdefaultencoding("utf8")
 
 
 class DbMaster():
@@ -18,7 +24,9 @@ class DbMaster():
             self.connect()
 
     def connect(self):
-        self.engine = create_engine(self.app.config['db_uri'])
+        config = self.app.config
+        db_uri = config['db_uri'] + "?charset=" + config['db_charset']
+        self.engine = create_engine(db_uri)
         self.metadata = MetaData(self.engine)
         DbMaster.engine = self.engine
         DbMaster.metadata = self.metadata

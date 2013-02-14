@@ -6,8 +6,8 @@ import szumu.chat.handlers
 from szumu.base import route
 from szumu.web import Controller
 from szumu.map.model import Map
-from szumu.map.services import find
-from szumu.building.base import BaseBuilding
+from szumu.map import services as map_services
+from szumu.building import services as build_services
 from szumu.building.special import *
 from szumu.config import buildings as builds
 
@@ -19,7 +19,7 @@ chat = szumu.chat.handlers.msgsrv
 class MapHandler(Controller):
 
     def get(self, mapid):
-        map = find(int(mapid))
+        map = map_services.find(int(mapid))
         if map is None:
             raise tornado.web.HTTPError(405)
 
@@ -36,7 +36,7 @@ class MapHandler(Controller):
             elif x in special_map:
                 buildings[i] = special_map[x].tostring()
             else:
-                buildings[i] = BaseBuilding.find(x)
+                buildings[i] = build_services.find(x)
             i = i + 1
 
         # current_user = self.get_current_user()

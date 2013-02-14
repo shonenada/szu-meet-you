@@ -23,7 +23,7 @@ class UserSignUp(Controller):
 
         username = self.get_argument("username").strip()
         password = self.get_argument("password").strip()
-        nickname = (self.get_argument("nickname").strip()).encode('utf-8')
+        nickname = self.get_argument("nickname").strip()
         gender = self.get_argument('gender', '1').strip()
 
         message = []
@@ -164,9 +164,9 @@ class Profile(Controller):
 
         user = self.get_current_user()
 
-        nickname = (self.get_argument('nickname', None)).encode('utf-8')
+        nickname = self.get_argument('nickname', None)
         gender = self.get_argument('gender', None)
-        truename = (self.get_argument('truename', None)).encode('utf-8')
+        truename = self.get_argument('truename', None)
         number = self.get_argument('number', 0)
         college = self.get_argument('college', 0)
         birthday = self.get_argument('birthday', 0000-00-00)

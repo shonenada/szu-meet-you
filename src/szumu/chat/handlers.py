@@ -39,6 +39,6 @@ class ChatMessage(Controller):
         user = self.get_current_user()
         if not user:
             raise httperror(403, 'Forbidden')
-        name = unicode(user.nickname).strip()
-        content = unicode(self.get_argument("content")).strip()
+        name = user.nickname
+        content = self.get_argument("content").strip()
         msgsrv.add_message("%s: %s" % (name, content))
