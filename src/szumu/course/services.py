@@ -10,7 +10,7 @@ stuselect_query = session.query(StuSelect)
 
 
 def find(id):
-    if id is None or not isinstance(id, int):
+    if id is None:
         return None
     else:
         query_course = course_query.filter_by(id=id)
@@ -22,7 +22,7 @@ def find(id):
 
 
 def find_by_classid(classid):
-    if classid is None or not isinstance(classid, int):
+    if classid is None:
         return None
     else:
         query_course = course_query.filter_by(cid=classid)
@@ -34,7 +34,7 @@ def find_by_classid(classid):
 
 
 def find(id):
-    if id is None or not isinstance(id, int):
+    if id is None:
         return None
     else:
         query_comment = comment_query.filter_by(id=id)
@@ -46,7 +46,7 @@ def find(id):
 
 
 def find_by_classid(classid):
-    if classid is None or not isinstance(classid, int):
+    if classid is None:
         return None
     else:
         query_comment = comment_query.filter_by(cid=classid)
@@ -78,7 +78,7 @@ def get_stu_select_by_name_and_number(truename, number):
 
 
 def get_stu_select_by_classid(classid):
-    if classid is None or not isinstance(classid, int):
+    if classid is None:
         return None
     else:
         query_stu_select = query_stu_select.filter_by(cid=classid)

@@ -6,7 +6,7 @@ from sqlalchemy.orm import mapper, Session
 
 from szumu.database import DbMaster
 from szumu.building.base import BaseBuilding
-from szumu.article.model import Aritcle
+from szumu.article.model import Article
 
 
 metadata = DbMaster.metadata

@@ -8,7 +8,7 @@ query = session.query(BaseBuilding)
 
 
 def find(id):
-    if id is None or not isinstance(id, int):
+    if id is None:
         return None
     else:
         query_building = query.filter_by(id=id)
@@ -20,7 +20,7 @@ def find(id):
 
 
 def find_special(id, special):
-    if id is None or not isinstance(id, int):
+    if id is None:
         return None
     is_special = (special in ['rent', 'office', 'student', 'stone', 'tech',
                               'teach', 'litera', 'north', 'south', 'gym',
@@ -35,10 +35,23 @@ def find_special(id, special):
         return None
 
 
-def save(building):
+def save_building(building):
     if building is None or not isinstance(building, BaseBuilding):
         return False
     else:
         session.add(building)
         session.commit()
         return True
+
+
+def update_building(building):
+    if building is None or not isinstance(building, BaseBuilding):
+        return False
+    else:
+        this_query = query.filter_by(id=building.id)
+        if this_query.count() > 0:
+            query_building = this_query.first()
+            query_building.title = building.title
+            query_building.descr = building.descr
+            session.commit()
+            return True

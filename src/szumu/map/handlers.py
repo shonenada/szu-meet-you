@@ -8,8 +8,8 @@ from szumu.web import Controller
 from szumu.map.model import Map
 from szumu.map import services as map_services
 from szumu.building import services as build_services
-from szumu.building.special import *
-from szumu.config import buildings as builds
+from szumu.building.special import special_map
+from szumu.config import buildings as build_config
 
 
 chat = szumu.chat.handlers.msgsrv
@@ -21,31 +21,29 @@ class MapHandler(Controller):
     def get(self, mapid):
         map = map_services.find(int(mapid))
         if map is None:
-            raise tornado.web.HTTPError(405)
+            raise tornado.web.HTTPError(404, "Location Not Found")
 
         link = map.link.split(',')
         path = map.path.split(',')
-        build = map.buildings.split(',')
+        buildings_in_map = map.buildings.split(',')
 
         buildings = {}
         i = 0
 
-        for x in build:
-            if not x or x == 'None':
+        for building in buildings_in_map:
+            if not building or building == 'None':
                 buildings[i] = None
-            elif x in special_map:
-                buildings[i] = special_map[x].tostring()
+            elif building in special_map:
+                buildings[i] = special_map[building].tostring()
             else:
-                buildings[i] = build_services.find(x)
+                b = build_services.find(building)
+                if b:
+                    buildings[i] = b.tostring()
             i = i + 1
-
-        # current_user = self.get_current_user()
-        # if not current_user is None:
-        #     current_user = current_user.as_array()
 
         self.set_cookie('lastview', mapid)
 
-        special = [x['id'] for x in builds.RENT_TYPE]
+        special = [x['id'] for x in build_config.RENT_TYPE]
         special.append('rent')
 
         self.render('map.html', map=map.link, title=map.title,

@@ -7,7 +7,7 @@ query = session.query(RelationShip)
 
 
 def get_focus_list(user_id):
-    if user_id is None or not isinstance(user_id, int):
+    if user_id is None:
         return None
     else:
         focus_list = (query.filter_by(fromid=user_id)
@@ -16,7 +16,7 @@ def get_focus_list(user_id):
 
 
 def get_ignore_list(user_id):
-    if user_id is None or not isinstance(user_id, int):
+    if user_id is None:
         return None
     else:
         ignore_list = (query.filter_by(fromid=user_id)
@@ -26,7 +26,7 @@ def get_ignore_list(user_id):
 
 
 def get_being_focused_list(user_id):
-    if user_id is None or not isinstance(user_id, int):
+    if user_id is None:
         return None
     else:
         focused_list = (query.filter_by(toid=user_id)
@@ -36,7 +36,7 @@ def get_being_focused_list(user_id):
 
 
 def get_being_ignored_list(user_id):
-    if user_id is None or not isinstance(user_id, int):
+    if user_id is None:
         return None
     else:
         ignored_list = (query.filter_by(toid=user_id)

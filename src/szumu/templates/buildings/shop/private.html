@@ -18,7 +18,7 @@ $(function(){
 	$(".roomsite-block-content-0").show();
 
 
-{% if user['id'] == shop['ownerid'] %}
+{% if user.id == shop.ownerid %}
 $('#edit-shop-form').submit(function(){
 	$.ajax({
 		url: '/shop/edit',
@@ -57,7 +57,7 @@ KE.show({
 {%block content %}
 <form id="shop-private-del-article">
 	{{ xsrf_form_html() }}
-	<input type="hidden" value="{{shop['id']}}" id="del-shop-id" name="shopid" />
+	<input type="hidden" value="{{shop.id}}" id="del-shop-id" name="shopid" />
 	<input type="hidden" value="" id="del-article-id" name="articleid" />
 </form>
 <div id="maps">
@@ -79,21 +79,21 @@ KE.show({
 					<div class="roomsite-block">
 						<div class="roomsite-block-nav">
 							<ul>
-								{% if user['id'] == shop['ownerid'] %}
+								{% if user.id == shop.ownerid %}
 								<a href="#id:0" class="roomsite-btn shop-private-nav"><li>店铺设置</li></a>
                                 <a href="#id:00" class="roomsite-btn shop-private-nav"><li>发布文章</li></a>
                                 {%else%}
                                 <a href="#id:0" class="roomsite-btn shop-private-nav"><li>介绍</li></a>
 								{%end%}
 								{% if articles %}
-								    {% for x in articles %}
-								<a href="#id:{{x['id']}}" class="roomsite-btn"><li><script>document.write(StringSub('{{x['title']}}',20));</script></li></a>
+								    {% for article in articles %}
+								<a href="#id:{{article.id}}" class="roomsite-btn"><li><script>document.write(StringSub('{{article.title}}',20));</script></li></a>
 								    {% end %}
 								{% end %}
 							</ul>
 						</div>
 						<div class="roomsite-block-container">
-							{% if user['id'] == shop['ownerid'] %}
+							{% if user.id == shop.ownerid %}
 							<div class="roomsite-block-content-0 roomsite-block-content"> 
 
                                 <form id="edit-shop-form" class="form-horizontal" method="post">
@@ -102,7 +102,7 @@ KE.show({
     								<div class="control-group">
 								        <label class="control-label" for="shopName">店铺名称</label>
 									    <div class="controls">
-										<input type="text" id="shopName" required placeholder="店铺名称" value="{{ shop['title'] }}" required name="shopName">
+										<input type="text" id="shopName" required placeholder="店铺名称" value="{{ shop.title }}" required name="shopName">
    										<span class="help-inline">* 您的店铺名称</span>
 									    </div>
 								    </div>
@@ -110,16 +110,16 @@ KE.show({
 								    <div class="control-group">
     									<label class="control-label" >店铺类型</label>
 									    <div class="controls">
-    										{% if shop['special'] == 'shop/private' %}<code>个人店铺</code>{%end%}
-    										{% if shop['special'] == 'shop/topic' %}<code>主题店铺</code>{%end%}
-    										{% if shop['special'] == 'shop/sell' %}<code>商品店铺</code>{%end%}
+    										{% if shop.special == 'shop/private' %}<code>个人店铺</code>{%end%}
+    										{% if shop.special == 'shop/topic' %}<code>主题店铺</code>{%end%}
+    										{% if shop.special == 'shop/sell' %}<code>商品店铺</code>{%end%}
 									    </div>
 								    </div>
 											    
 								    <div class="control-group">
     									<label class="control-label" for="descr">店铺介绍</label>
 									    <div class="controls">
-    										<textarea id="descr" rows="5" class="span3" required name="descr" placeholder="店铺介绍">{{shop['descr']}}</textarea>
+    										<textarea id="descr" rows="5" class="span3" required name="descr" placeholder="店铺介绍">{{shop.descr}}</textarea>
 										    <span class="help-inline">* 您的店铺的介绍</span>
 									    </div>
 								    </div>
@@ -137,7 +137,7 @@ KE.show({
 							    <p>
 		    					    <form id="shop-private-send-article" class="inline-form">
 		    					    	{{ xsrf_form_html() }}
-		    					    	<input type="hidden" value="{{ shop['id'] }}" name="shopid" id="shopid" />
+		    					    	<input type="hidden" value="{{ shop.id }}" name="shopid" id="shopid" />
 		    					    	<label>标题：</label> <input type="text" value="" maxlength="20" required class="span5" name="title" id="title" /><br />
 		    					    	<label>内容：</label>
 		    					    	<textarea id="content" name="content" style="width:600px;height:180px;visibility:hidden;"></textarea>
@@ -152,11 +152,11 @@ KE.show({
 							</div>
 							{%end%}
 					        {% if articles %}
-							    {% for x in articles %}
-							<div class="roomsite-block-content-{{x['id']}} roomsite-block-content">
-								<div style="text-align:center;width:100%;"><h3>{{x['title']}}</h3></div>
-								<div style="text-align:right;width:100%">{% if user['id'] == shop['ownerid'] %} <a href="#del-id:{{x['id']}}" class="del-article-btn">[删除]</a> {%end%}{{x['created']}}</div>
-							    <p>{{x['content']}}</p>
+							    {% for article in articles %}
+							<div class="roomsite-block-content-{{article.id}} roomsite-block-content">
+								<div style="text-align:center;width:100%;"><h3>{{article.title}}</h3></div>
+								<div style="text-align:right;width:100%">{% if user.id == shop.ownerid %} <a href="#del-id:{{article.id}}" class="del-article-btn">[删除]</a> {%end%}{{article.created}}</div>
+							    <p>{{article.content}}</p>
 							</div>
 						        {% end %}
                             {% end %}

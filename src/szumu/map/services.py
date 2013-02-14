@@ -11,7 +11,7 @@ query = session.query(Map)
 
 
 def find(id):
-    if id is None or not isinstance(id, int):
+    if id is None:
         return None
     else:
         query_map = query.filter_by(id=id)

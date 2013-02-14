@@ -22,7 +22,8 @@ class BaseBuilding(object):
 
 
     def tostring(self):
-        return {'title': self.title,
+        return {'id': self.id,
+                'title': self.title,
                 'ownerid': self.ownerid,
                 'pic': self.pic,
                 'mapid': self.mapid,
@@ -38,7 +39,7 @@ building_table = Table('buildings', metadata,
                        Column('title', String(250)),
                        Column('ownerid', Integer),
                        Column('mapid', Integer),
-                       Column('mapside', Integer),
+                       Column('mapsite', Integer),
                        Column('pic', String(250), default='nopic.jpg'),
                        Column('color', String(30), default='brown'),
                        Column('descr', Text),

@@ -9,7 +9,7 @@ session = Session()
 query = session.query(Article)
 
 
-def save(article):
+def save_article(article):
     if article is None or not isinstance(article, Article):
         return False
     else:
@@ -18,7 +18,7 @@ def save(article):
         return True
 
 
-def remove(article):
+def remove_article(article):
     if article is None or not isinstance(article, Article):
         return False
     else:
@@ -28,7 +28,7 @@ def remove(article):
 
 
 def find(id):
-    if id is None or not isinstance(id, int):
+    if id is None:
         return None
     else:
         query_article = query.filter_by(id=id)
@@ -39,7 +39,7 @@ def find(id):
 
 
 def find_by_author(author_id):
-    if author_id is None or not isinstance(author_id, int):
+    if author_id is None:
         return None
     else:
         query_article = query.filter_by(author=author_id)
@@ -50,10 +50,10 @@ def find_by_author(author_id):
 
 
 def find_by_shopid(shopid):
-    if shopid is None or not isinstance(shopid, int):
+    if shopid is None:
         return None
     else:
-        query_article = qurey.filter_by(shopid=shopid)
+        query_article = query.filter_by(shopid=shopid)
         if query_article.count() > 0:
             return query_article.all()
         else:

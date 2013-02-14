@@ -16,7 +16,7 @@ metadata = DbMaster.metadata
 session = Session()
 
 
-class Aritcle(object):
+class Article(object):
     ''' 文章模型  '''
 
     def __init__(self, title):
@@ -33,4 +33,4 @@ article_table = Table('articles', metadata,
                       Column('created', DateTime, default=datetime.now)
                       )
 
-mapper(Aritcle, article_table)
+mapper(Article, article_table)

@@ -8,9 +8,13 @@ from szumu.web import json_encode, Controller
 from szumu.user.model import User
 from szumu.user import services as user_services
 from szumu.building import special
+from szumu.building import services as building_services
 from szumu.building.shop import model as ShopModel
 from szumu.course.model import Comment
 from szumu.course import services as course_services
+from szumu.article.model import Article
+from szumu.article import services as article_services
+from szumu.config import buildings as build_config
 
 
 @route(r"/office/student/reg")
@@ -282,9 +286,9 @@ class Rent(BuildingHandler):
         self.check_whether_finish_truename_and_number()
         if not id:
             raise tornado.web.HTTPError(405)
-        house = special.BeingRent.find(id)
+        house = building_services.find(id)
         self.render('buildings/rent.html', house=house,
-                    rentType=buildings.RENT_TYPE)
+                    rentType=build_config.RENT_TYPE)
 
     @tornado.web.authenticated
     def post(self, id):
@@ -339,16 +343,16 @@ class Rent(BuildingHandler):
 class Shop(BuildingHandler):
     @tornado.web.authenticated
     def get(self, type, id):
-        user = self.get_current_user().as_array()
+        user = self.get_current_user()
         if (type == 'private'):
-            shop = ShopModel.PrivateShop.find(id)
+            shop = building_services.find(id)
             if not shop:
                 raise httperror(404, '该店铺不存在')
-            articles = ShopModel.PrivateShop.getArticlesByShopid(id)
+            articles = article_services.find_by_shopid(id)
             self.render("buildings/shop/private.html",
                         user=user, shop=shop, articles=articles)
         if (type == 'sell'):
-            shop = ShopModel.SellShop.find(id)
+            shop = building_services.find(id)
             self.render("buildings/shop/sell.html", user=user, shop=shop)
 
     @tornado.web.authenticated
@@ -364,7 +368,7 @@ class EditShop(BuildingHandler):
 
     @tornado.web.authenticated
     def post(self):
-        user = self.get_current_user().as_array()
+        user = self.get_current_user()
         shopid = self.get_argument('shopid', None)
         title = self.get_argument('shopName', None)
         descr = self.get_argument('descr', None)
@@ -376,13 +380,13 @@ class EditShop(BuildingHandler):
             success = False
             messages.append('该店铺不存在')
 
-        shop = ShopModel.Shop.find(shopid)
+        shop = building_services.find(shopid)
 
         if not shop:
             success = False
             messages.append('该店铺不存在')
         else:
-            if not shop['ownerid'] == user['id']:
+            if not shop.ownerid == user.id:
                 success = False
                 messages.append('您无权进行该操作')
 
@@ -395,10 +399,10 @@ class EditShop(BuildingHandler):
             messages.append('店铺介绍不能为空')
 
         if success:
-            editshop = ShopModel.Shop(title, user['id'])
-            editshop.id = shopid
+            editshop = building_services.find(shopid)
+            editshop.title = title
             editshop.descr = descr
-            editshop.update()
+            building_services.update_building(editshop)
 
         self.finish(json_encode({'success': success, 'messages': messages}))
 
@@ -411,14 +415,14 @@ class NewPrivateArticle(BuildingHandler):
 
     @tornado.web.authenticated
     def post(self, id):
-        shop = ShopModel.PrivateShop.find(id)
-        user = self.get_current_user().as_array()
+        shop = building_services.find(id)
+        user = self.get_current_user()
         title = self.get_argument('title', None)
         content = self.get_argument('content', None)
         success = True
         messages = []
 
-        if shop['ownerid'] != user['id']:
+        if shop.ownerid != user.id:
             success = False
             messages.append('您无权进行该操作')
 
@@ -431,12 +435,12 @@ class NewPrivateArticle(BuildingHandler):
             messages.append('内容不能为空')
 
         if success:
-            article = Aritcles(title)
+            article = Article(title)
             article.content = content
             article.special = 'shop/private'
             article.shopid = id
-            article.author = user['id']
-            article.save()
+            article.author = user.id
+            article_services.save_article(article)
 
         self.finish(json_encode({'success': success, 'messages': messages}))
 

@@ -32,7 +32,7 @@ KE.show({
 {%block content %}
 <form id="shop-private-del-article">
 	{{ xsrf_form_html() }}
-	<input type="hidden" value="{{shop['id']}}" id="del-shop-id" name="shopid" />
+	<input type="hidden" value="{{shop.id}}" id="del-shop-id" name="shopid" />
 	<input type="hidden" value="" id="del-article-id" name="articleid" />
 </form>
 <div id="maps">

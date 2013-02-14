@@ -45,7 +45,7 @@ def set_all_readed(user_id):
 
 
 def get_ones_receive_msg(user_id):
-    if user_id is None or not isinstance(user_id, int):
+    if user_id is None:
         return None
     else:
         msgs = (query.filter(Message.toid == user_id)
@@ -54,7 +54,7 @@ def get_ones_receive_msg(user_id):
 
 
 def get_ones_send_msg(user_id):
-    if user_id is None or not isinstance(user_id, int):
+    if user_id is None:
         return None
     else:
         msgs = (query.filter(Message.fromid == user_id)
@@ -63,7 +63,7 @@ def get_ones_send_msg(user_id):
 
 
 def find(msg_id):
-    if msg_id is None or not isinstance(msg_id, int):
+    if msg_id is None:
         return None
     else:
         msg = query.filter_by(id=msg_id).first()
