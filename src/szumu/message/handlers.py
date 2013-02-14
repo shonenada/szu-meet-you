@@ -28,7 +28,6 @@ class CheckMsg(Controller):
         else:
             self.finish(json_encode({'new_msg': False}))
 
-
     @tornado.web.authenticated
     def post(self):
         raise tornado.web.HTTPError(405)

@@ -9,6 +9,7 @@ from szumu.config import buildings
 from szumu.building.base import BaseBuilding
 from szumu.building.services import find_special
 
+
 def build_special(building_config):
     special = BaseBuilding(building_config['title'])
     special.ownerid = building_config['ownerid']

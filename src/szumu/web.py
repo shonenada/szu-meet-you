@@ -49,4 +49,3 @@ class Controller(tornado.web.RequestHandler):
             raise httperror(403, 'Please input your truename')
         if not number:
             raise httperror(403, 'Please input your number')
-            

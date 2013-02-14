@@ -20,7 +20,6 @@ class BaseBuilding(object):
     def __init__(self, title):
         self.title = title
 
-
     def tostring(self):
         return {'id': self.id,
                 'title': self.title,

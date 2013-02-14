@@ -84,5 +84,5 @@ user_table = Table('users', metadata,
                    Column('state', Integer, default=1),
                    Column('trash', Integer, default=0),
                    )
-    
+
 mapper(User, user_table)

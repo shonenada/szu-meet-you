@@ -107,7 +107,7 @@ class Teach(BuildingHandler):
         truename = user.truename
         number = user.number
         courses = (course_services.get_stu_select_by_name_and_number(truename,
-                                                                    number))
+                                                                     number))
         classes = []
         if not courses is None:
             for course in courses:
@@ -163,7 +163,7 @@ class GetClassComment(Controller):
     @tornado.web.authenticated
     def get(self, classid):
         self.check_whether_finish_truename_and_number()
-        
+
         user = self.get_current_user()
 
         username = user.username
@@ -210,7 +210,7 @@ class NewClassComment(Controller):
         if success:
             comment = Comment(classid, user.id, content)
             course_services.save_comment(comment)
-    
+
         self.finish(json_encode({'success': success, 'messages': messages}))
 
 

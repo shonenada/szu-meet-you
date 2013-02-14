@@ -10,6 +10,7 @@ from szumu.base import route
 from szumu.user.model import User
 from szumu.user import services as user_services
 
+
 @route("/auth/reg")
 class UserSignUp(Controller):
 
@@ -123,7 +124,7 @@ class UserLogin(Controller):
             current_user.update_log_infor(token, remote_ip, log_time)
 
             self.set_secure_cookie('token', token)
-            
+
         self.finish(json_encode({'success': success, 'message': message}))
 
 

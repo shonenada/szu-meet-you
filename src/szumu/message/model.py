@@ -18,7 +18,7 @@ class Message(object):
 
     READED = 1
     NOT_READED = 0
-    
+
     def __init__(self, fromid, toid, msg, state=NOT_READED):
         self.fromid = fromid
         self.toid = toid

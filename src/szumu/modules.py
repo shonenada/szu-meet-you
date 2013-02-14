@@ -1,7 +1,7 @@
 #/usr/bin/env python
 from szumu.master.handlers import Home, AboutUs, ContactUs
 from szumu.user.handlers import (UserSignUp, UserLogout, UserLogin, MyHome,
-                                  Profile, UserInfor)
+                                 Profile, UserInfor)
 from szumu.building.handlers import (Office, OfficePage, Teach, ClassMate,
                                      GetClassComment, NewClassComment, Tech,
                                      Rent, Shop, EditShop, NewPrivateArticle)

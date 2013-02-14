@@ -65,7 +65,7 @@ comment_table = Table('comment', metadata,
                       Column('userid', Integer),
                       Column('comment', Text),
                       Column('created', DateTime, default=datetime.now)
-                     )
+                      )
 
 
 mapper(Course, course_table)
