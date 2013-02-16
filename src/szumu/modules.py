@@ -13,7 +13,7 @@ from szumu.building.shop.handlers import CurrentUserShop
 
 
 modules_master = [Home, AboutUs, ContactUs]
-modules_users = [UserSignUp, UserLogout, UserLogin, MyHome, UserInfor, Profile]
+modules_users = [SignUp, SignOut, SignIn, MyHome, UserInfor, Profile]
 modules_building = [Office, OfficePage, Teach, ClassMate, GetClassComment,
                     NewClassComment, Tech, Rent, Shop, EditShop,
                     NewPrivateArticle, CurrentUserShop]

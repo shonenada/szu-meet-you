@@ -11,8 +11,8 @@ from szumu.user.model import User
 from szumu.user import services as user_services
 
 
-@route("/auth/reg")
-class UserSignUp(Controller):
+@route("/signup")
+class SignUp(Controller):
 
     def get(self):
         self.check_whether_logged()
@@ -69,8 +69,8 @@ class UserSignUp(Controller):
         self.finish(json_encode({'success': success, 'message': message}))
 
 
-@route("/auth/login")
-class UserLogin(Controller):
+@route("/signin")
+class SignIn(Controller):
     def get(self):
         self.check_whether_logged()
         username = self.get_secure_cookie('username')
@@ -128,8 +128,8 @@ class UserLogin(Controller):
         self.finish(json_encode({'success': success, 'message': message}))
 
 
-@route("/auth/logout")
-class UserLogout(Controller):
+@route("/signout")
+class SignOut(Controller):
 
     def get(self):
         self.clear_all_cookies()
