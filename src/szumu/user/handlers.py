@@ -225,3 +225,14 @@ class UserInfor(Controller):
     @tornado.web.authenticated
     def post(self, userid):
         raise tornado.web.HTTPError(405)
+
+
+@route('/resident')
+class Resident(Controller):
+    @tornado.web.authenticated
+    def get(self):
+        self.render('account/resident.html')
+
+    @tornado.web.authenticated
+    def post(self):
+        pass

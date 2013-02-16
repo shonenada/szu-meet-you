@@ -49,7 +49,7 @@ def find_by_classid(classid):
     if classid is None:
         return None
     else:
-        query_comment = comment_query.filter_by(cid=classid)
+        query_comment = comment_query.filter_by(classid=classid)
         if query_comment.count() > 0:
             return query_comment.first()
         else:

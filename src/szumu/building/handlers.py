@@ -449,11 +449,11 @@ class NewPrivateArticle(BuildingHandler):
 class DelPrivateArticle(BuildingHandler):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(404)
+        raise httperror(405)
 
     @tornado.web.authenticated
     def post(self):
-        user = self.get_current_user().as_array()
+        user = self.get_current_user()
         shopid = self.get_argument('shopid')
         articleid = self.get_argument('articleid')
 
@@ -464,14 +464,13 @@ class DelPrivateArticle(BuildingHandler):
             success = False
             messages.append('该店铺不存在')
 
-        shop = ShopModel.PrivateShop.find(shopid)
+        shop = building_services.find(shopid)
 
         if not shop:
             success = False
             messages.append('该店铺不存在')
         else:
-            if not shop['ownerid'] == user['id']:
-                print "shop.ownerid != user.id"
+            if not shop.ownerid == user.id:
                 success = False
                 messages.append('您无权进行该操作')
 
@@ -479,23 +478,21 @@ class DelPrivateArticle(BuildingHandler):
             success = False
             messages.append('找不到指定的文章')
 
-        article = Aritcles.find(articleid)
+        article = article_services.find(articleid)
 
         if not articleid:
             success = False
             messages.append('找不到指定的文章')
 
-        if not article['author'] == user['id']:
+        if not article.author == user.id:
             success = False
             messages.append('您无权进行该操作')
 
-        if not str(article['shopid']) == shopid:
+        if not str(article.shopid) == shopid:
             success = False
             messages.append('您无权进行该操作')
 
         if success:
-            delarticle = Aritcles(article['title'])
-            delarticle.id = articleid
-            delarticle.remove()
+            article_services.remove_article(article)
 
         self.finish(json_encode({'success': success, 'messages': messages}))
