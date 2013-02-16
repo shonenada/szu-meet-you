@@ -1,6 +1,6 @@
 #/usr/bin/env python
 from szumu.master.handlers import Home, AboutUs, ContactUs
-from szumu.user.handlers import (UserSignUp, UserLogout, UserLogin, MyHome,
+from szumu.user.handlers import (SignUp, SignOut, SignIn, MyHome,
                                  Profile, UserInfor)
 from szumu.building.handlers import (Office, OfficePage, Teach, ClassMate,
                                      GetClassComment, NewClassComment, Tech,

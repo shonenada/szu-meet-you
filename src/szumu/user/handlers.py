@@ -145,19 +145,19 @@ class MyHome(Controller):
     @tornado.web.authenticated
     def get(self):
         self.redirect('/map/2')
-        # self.render('account/myhome.html')
+        # self.render('user/myhome.html')
 
     @tornado.web.authenticated
     def post(self):
         pass
 
 
-@route('/account/profile')
+@route('/user/profile')
 class Profile(Controller):
     @tornado.web.authenticated
     def get(self):
         current_user = self.get_current_user()
-        self.render('account/profile.html', user=current_user)
+        self.render('user/profile.html', user=current_user)
 
     @tornado.web.authenticated
     def post(self):
@@ -209,7 +209,7 @@ class Profile(Controller):
         self.finish(json_encode({'success': success, 'message': message}))
 
 
-@route(r'/account/userinfor/get/([0-9]+)')
+@route(r'/user/userinfor/get/([0-9]+)')
 class UserInfor(Controller):
     @tornado.web.authenticated
     def get(self, userid):
@@ -231,7 +231,7 @@ class UserInfor(Controller):
 class Resident(Controller):
     @tornado.web.authenticated
     def get(self):
-        self.render('account/resident.html')
+        self.render('user/resident.html')
 
     @tornado.web.authenticated
     def post(self):

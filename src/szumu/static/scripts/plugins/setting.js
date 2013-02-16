@@ -136,7 +136,7 @@ $(function(){
 
     $('#del-msg-form').submit(function(){
 		$.ajax({
-			url: '/account/msg/del/'+$("#msg-kind").val(),
+			url: '/user/msg/del/'+$("#msg-kind").val(),
 			type: 'post',
 			dataType: 'json',
 			data: $(this).serialize(),
@@ -159,7 +159,7 @@ $(function(){
 
 	$('#send-msg-form').submit(function(){
 		$.ajax({
-			url: '/account/msg/send',
+			url: '/user/msg/send',
 			type: 'post',
 			dataType: 'json',
 			data: $(this).serialize(),
@@ -184,7 +184,7 @@ $(function(){
 	
 	$('#re-msg-form').submit(function(){
 		$.ajax({
-			url: '/account/msg/re',
+			url: '/user/msg/re',
 			type: 'post',
 			dataType: 'json',
 			data: $(this).serialize(),
@@ -223,7 +223,7 @@ var bindBtnFunction = function() {
     $(".add-friend-btn").click(function(){
     	userid = $(this).attr("href").replace('#addfriend:','')
     	$.ajax({
-		    url:'/account/relation/friend/new/' + userid,
+		    url:'/user/relation/friend/new/' + userid,
 		    data:{'_xsrf':get_xsrf()},
 		    type:'PUT',
 		    async:true ,
@@ -241,7 +241,7 @@ var bindBtnFunction = function() {
     $(".remove-friend-btn").click(function(){
     	userid = $(this).attr("href").replace('#removefriend:','')
     	$.ajax({
-		    url:'/account/relation/friend/remove/' + userid,
+		    url:'/user/relation/friend/remove/' + userid,
 		    type:'PUT',
 		    data:{'_xsrf':get_xsrf()},
 		    async:true ,
@@ -278,7 +278,7 @@ var bindBtnFunction = function() {
 // 检查新私信
 var checkMsg = function(){
 	$.ajax({
-		url:'/account/msg/check',
+		url:'/user/msg/check',
 		type:'GET',
 		async:true ,
 		dataType:'json',
@@ -311,7 +311,7 @@ var getMsg = function(page, type){
         $("#list-txt").html('发件人')
 	}
 	$.ajax({
-		url:'/account/msg/get/' + type + '/?page='+page,
+		url:'/user/msg/get/' + type + '/?page='+page,
 		type:'GET',
 		async:true ,
 		dataType:'json',
@@ -419,7 +419,7 @@ var getUserInfor = function(userid, classid){
 		return ;
 	}
 	$.ajax({
-		url:'/account/userinfor/get/'+userid,
+		url:'/user/userinfor/get/'+userid,
 		type:'GET',
 		async:true ,
 		dataType:'json',

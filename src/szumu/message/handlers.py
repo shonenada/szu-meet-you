@@ -11,7 +11,7 @@ from szumu.message import services as msg_services
 from szumu.base import route
 
 
-@route("/account/msg/check")
+@route("/c/msg/check")
 class CheckMsg(Controller):
 
     @tornado.web.authenticated
@@ -33,7 +33,7 @@ class CheckMsg(Controller):
         raise tornado.web.HTTPError(405)
 
 
-@route(r"/account/msg/get/(send|receive)/")
+@route(r"/user/msg/get/(send|receive)/")
 class GetMsg(Controller):
 
     @tornado.web.authenticated
@@ -63,7 +63,7 @@ class GetMsg(Controller):
         raise tornado.web.HTTPError(405)
 
 
-@route(r"/account/msg/del/(send|receive)")
+@route(r"/user/msg/del/(send|receive)")
 class DelMsg(Controller):
 
     @tornado.web.authenticated
@@ -96,7 +96,7 @@ class DelMsg(Controller):
                                  'delID': del_ids}))
 
 
-@route(r"/account/msg/send")
+@route(r"/user/msg/send")
 class SendMsg(Controller):
     @tornado.web.authenticated
     def get(self):
@@ -122,7 +122,7 @@ class SendMsg(Controller):
         self.finish(json_encode({'success': True}))
 
 
-@route(r"/account/msg/re")
+@route(r"/user/msg/re")
 class ReMsg(Controller):
     @tornado.web.authenticated
     def get(self):

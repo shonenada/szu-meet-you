@@ -9,7 +9,7 @@ from szumu.user import model
 from szumu.base import route
 
 
-@route(r"/account/relation/friend/new/([0-9]+)")
+@route(r"/user/relation/friend/new/([0-9]+)")
 class NewRelationship(szumu.web.Controller):
     @tornado.web.authenticated
     def get(self):
@@ -30,7 +30,7 @@ class NewRelationship(szumu.web.Controller):
         self.finish(json_encode({'success': True}))
 
 
-@route(r"/account/relation/friend/remove/([0-9]+)")
+@route(r"/user/relation/friend/remove/([0-9]+)")
 class RemoveRelationship(szumu.web.Controller):
     @tornado.web.authenticated
     def get(self):
