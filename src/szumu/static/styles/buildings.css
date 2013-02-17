@@ -1,0 +1,170 @@
+@CHARSET "UTF-8";
+.buildings{
+	position: absolute;
+	width: 180px;
+	height: 150px;
+	top: 50%;
+	left: 50%;
+}
+.building-with-border{
+	border: 1px solid #99c2c7;
+}
+.buildings img{
+	opacity: 0.8;
+	width: 180px;
+	height: 150px;
+}
+.buildings img:hover{
+	opacity:1;
+}
+.building-btn{
+	display:block;
+	width:180px;
+	height:150px;
+}
+
+/* 屋子 */
+.house-roof{
+	margin:0 auto;
+	width:180px;
+	height:6px;
+	z-index:50;
+}
+.house-roof2{
+	margin:0 auto;
+	width:176px;
+	height:2px;
+	z-index:40;
+}
+.house-roof3{
+	margin:0 auto;
+	width:172px;
+	height:3px;
+	z-index:60;
+}
+.house-title{
+	margin:0 auto;
+	width:168px;
+	height:30px;
+	z-index:70;
+	color:#fff;
+	line-height:30px;
+	font-size:24px;
+	text-align:center;
+}
+.house-wall{
+	height:105px;
+	background:#fff;
+	width:158px;
+	margin:0 auto;
+	padding:5px;
+}
+.house-shadow{
+	width:208px;
+	height:44px;
+	position:absolute;
+	z-index:-10;
+	left:-14px;
+	bottom:-20px;
+}
+
+/* 屋子配色 */
+.color-brown .house-roof{
+	background:#824b51;
+}
+.color-brown .house-roof2{
+	background:#5e010b;
+}
+.color-brown .house-roof3{
+	background:#edd9da;
+}
+.color-brown .house-title{
+	background:#824b51;
+}
+.color-brown .house-shadow{
+	background:url(/static/images/house-shadow-brown.png) no-repeat;
+}
+
+#buildings{
+	margin-left: -90px;
+	margin-top: -85px;
+}
+
+#buildings-1{
+	margin-left: -520px;
+	margin-top: -275px;
+}
+
+#buildings-2{
+	margin-left: -305px;
+	margin-top: -275px;
+}
+
+#buildings-3{
+	margin-left: -90px;
+	margin-top: -275px;
+}
+
+#buildings-4{
+	margin-left: 125px;
+	margin-top: -275px;
+}
+
+#buildings-5{
+	margin-left: 340px;
+	margin-top: -275px;
+}
+
+#buildings-6{
+	margin-left: -520px;
+	margin-top: -85px;
+}
+
+#buildings-7{
+	margin-left: -305px;
+	margin-top: -85px;
+}
+
+#buildings-8{
+	margin-left: 125px;
+	margin-top: -85px;
+}
+
+#buildings-9{
+	margin-left: 340px;
+	margin-top: -85px;
+}
+
+#buildings-10{
+	margin-left: -520px;
+	margin-top: 105px;
+}
+
+#buildings-11{
+	margin-left: -305px;
+	margin-top: 105px;
+}
+
+#buildings-12{
+	margin-left: -90px;
+	margin-top: 105px;
+}
+
+#buildings-13{
+	margin-left: 125px;
+	margin-top: 105px;
+}
+
+#buildings-14{
+	margin-left: 340px;
+	margin-top: 105px;
+}
+
+
+.mate-box{
+	display: inline-block;
+	border-radius: 5px;
+	padding:5px;
+	border: 1px solid #e0e0e0;
+	margin:5px;
+}

@@ -1,0 +1,102 @@
+@CHARSET "UTF-8";
+
+.road{
+	
+}
+
+.road-middle{
+	position:absolute;
+	left:50%;
+	top:50%;
+	background:URL(/static/images/road.png);
+}
+#road-middle-bg{
+	margin-left:-49px;
+	margin-top:-59px;
+	border-radius:15px;
+	border:4px white solid;
+	width:90px;
+	height:90px;
+}
+#road-middle-shadow{
+	margin-left:-45px;
+	margin-top:-55px;
+	width:90px;
+	height:90px;
+}
+
+#road-north{
+	position:absolute;
+	margin-left:-49px;
+	width:98px;
+	height:50%;
+	left:50%;
+	top:0px;
+	background:URL(/static/images/road-h.png);
+}
+
+#road-south{
+	position:absolute;
+	margin-left:-49px;
+	width:98px;
+	height:50%;
+	left:50%;
+	bottom:0px;
+	background:URL(/static/images/road-h.png);
+	
+	display:table-cell;
+}
+
+#road-east{
+	position:absolute;
+	margin-top:-59px;
+	width:50%;
+	height:98px;
+	right:0px;
+	top:50%;
+	background:URL(/static/images/road-w.png);
+	
+	line-height:98px;
+}
+
+#road-west{
+	position:absolute;
+	margin-top:-59px;
+	width:50%;
+	height:98px;
+	left:0px;
+	top:50%;
+	background:URL(/static/images/road-w.png);
+	
+	line-height:98px;
+}
+.arrow{
+	display:block;
+	width:50px;
+	height:50px;
+	margin:5px;
+}
+
+.arrow_n{
+	background:URL(../images/arrow_n.png) no-repeat;
+	margin:0 auto;
+	margin-top:5px;
+}
+
+.arrow_s{
+	background: URL(../images/arrow_s.png) no-repeat;
+	margin:0 auto;
+	position:relative;
+	bottom:-100%;
+}
+
+.arrow_w{
+	background:URL(../images/arrow_w.png) no-repeat;
+	margin-top:24px;
+}
+
+.arrow_e{
+	background:URL(../images/arrow_e.png) no-repeat;
+	margin-top:24px;
+	float:right;
+}

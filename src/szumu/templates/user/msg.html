@@ -1,0 +1,28 @@
+{% extends "../global.html" %}
+{% block htmlhead %}
+<script type="text/javascript" src="{{ static_url("scripts/user/profile.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/user/msg.css") }}" />
+<!--[if !gt IE 9]>
+<style>
+	#main{
+		background:#fff;
+	}
+</style>
+<![endif]-->
+{% end %}
+{% block content %}
+<div id="main">
+	<div id="friends-list">
+	    <h4>好友列表</h4>
+	    {% for f in friends %}
+        {{ f['nickname'] }}
+	    {%end%}
+	</div>
+
+	<div id="msg-list">
+        <h4>消息列表</h4>
+	</div>
+</div>
+{% end %}
+
+{% block right %}{% end %}

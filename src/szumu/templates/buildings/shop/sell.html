@@ -1,0 +1,72 @@
+{% extends "../../global.html" %}
+{% block htmlhead %}
+<script type="text/javascript" src="{{ static_url("scripts/plugins/arrow.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/building/room.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/building/shop.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("scripts/plugins/editor/kindeditor.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/path.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/buildings.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/room.css") }}" />
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/shop.css") }}" />
+<style>
+.roomsite-block-content{
+	text-indent:0em;
+}
+</style>
+<script>
+$(function(){
+	$(".roomsite-block-content-0").show();
+});
+KE.show({
+	id : 'content',
+	resizeMode : 1,
+	allowPreviewEmoticons : false,
+	allowUpload : false,
+	items : [
+	'fontname', 'fontsize', '|', 'textcolor', 'bgcolor', 'bold', 'italic', 'underline',
+	'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+	'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+});
+</script>
+{% end %}
+{%block content %}
+<form id="shop-private-del-article">
+	{{ xsrf_form_html() }}
+	<input type="hidden" value="{{shop.id}}" id="del-shop-id" name="shopid" />
+	<input type="hidden" value="" id="del-article-id" name="articleid" />
+</form>
+<div id="maps">
+	<div id="map" class="map">
+		<div id="shadow" class="shadow"></div>
+		<div id="office" class="room-bg">
+			<div class="leave" id="quit">
+				出门<a href="#/office" id="btn-leave" title="出门" alt="出门"></a>
+			</div>
+		</div>
+				
+		<div id="roomsite">
+		
+			<div id="room-sitemaster">
+				<div class="roomsite-title">
+					{{ shop.title }}
+				</div>
+				<div class="roomsite-content">
+					<div class="roomsite-block">
+						<div class="roomsite-block-nav">
+							<ul>
+								<a href="#id:0" class="roomsite-btn shop-private-nav"><li>介绍</li></a>
+							</ul>
+						</div>
+						<div class="roomsite-block-container">
+							<div class="roomsite-block-content-0 roomsite-block-content"> 
+							    <p>{{ shop.descr }}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% end %}
+{% block right %} {%end%}
