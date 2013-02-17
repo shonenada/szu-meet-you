@@ -13,9 +13,9 @@ from szumu.building.shop.model import Shop
 @route(r"/user/myshop")
 class CurrentUserShop(szumu.web.Controller):
     def get(self):
-        current_user = self.get_current_user()
+        current_user = self.current_user
         if not current_user:
-            raise httperror(403)
+            raise tornado.web.HTTPError(403)
         user_shop = Shop.getCurrentUserShop(current_user.id)
         if not user_shop:
             self.write("您未申请店铺")

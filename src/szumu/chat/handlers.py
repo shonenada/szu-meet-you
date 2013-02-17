@@ -36,9 +36,9 @@ class ChatMessage(Controller):
 
     @tornado.web.authenticated
     def post(self):
-        user = self.get_current_user()
+        user = self.current_user
         if not user:
-            raise httperror(403, 'Forbidden')
+            raise tornado.web.HTTPError(403, 'Forbidden')
         name = user.nickname
         content = self.get_argument("content").strip()
         msgsrv.add_message("%s: %s" % (name, content))

@@ -118,16 +118,7 @@ def update_user(user):
         query_user.college = user.college
         query_user.birthday = user.birthday
         query_user.qq = user.qq
-        session.commit()
-        return True
-
-
-def reg_in_school(username):
-    """Update State"""
-    this_query = query.filter_by(username=username)
-    if this_query.count() > 0:
-        query_user = this_query.first()
-        query_user.state = 3
+        query_user.state = user.state
         session.commit()
         return True
 

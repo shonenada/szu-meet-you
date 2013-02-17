@@ -9,7 +9,6 @@ from szumu.user.model import User
 from szumu.user import services as user_services
 from szumu.building import special
 from szumu.building import services as building_services
-from szumu.building.shop import model as ShopModel
 from szumu.course.model import Comment
 from szumu.course import services as course_services
 from szumu.article.model import Article
@@ -26,7 +25,7 @@ class Office(Controller):
     @tornado.web.authenticated
     def post(self):
         message = []
-        user = self.get_current_user()
+        current_user = self.current_user
         truename = unicode(self.get_argument('truename', None)).strip()
         birthday = unicode(self.get_argument('birthday', '0000-00-00')).strip()
         number = unicode(self.get_argument('number', None)).strip()
@@ -41,11 +40,11 @@ class Office(Controller):
             message.append('真实姓名不能为空')
             success = False
 
-        if model.User.check_truename(truename, user.username):
+        if user_services.is_truename_existed(truename, current_user.username):
             success = False
             message.append('姓名已存在，若您未曾登记过信息，请联系站长')
 
-        if model.User.check_number(number, user.username):
+        if user_services.is_number_existed(number, current_user.username):
             success = False
             message.append('学号已存在，若您未曾登记过信息，请联系站长')
 
@@ -62,15 +61,15 @@ class Office(Controller):
             success = False
 
         if success:
-            user.truename = truename
-            user.birthday = birthday
-            user.number = number
-            user.college = college
-            user.phone = phone
-            user.shortPhone = short
-            user.qq = qq
-            user.state = 3
-            user.reg_the_identity()
+            current_user.truename = truename
+            current_user.birthday = birthday
+            current_user.number = number
+            current_user.college = college
+            current_user.phone = phone
+            current_user.shortPhone = short
+            current_user.qq = qq
+            current_user.state = 3
+            user_services.update_user(current_user)
 
         self.finish({'success': success, 'message': message})
 
@@ -90,7 +89,7 @@ class BuildingHandler(Controller):
 class OfficePage(BuildingHandler):
     def get(self):
         self.get_infor(special.office)
-        user = self.get_current_user()
+        user = self.current_user
         self.render('buildings/office.html',
                     title=self.title, descr=self.descr, user=user)
 
@@ -103,7 +102,7 @@ class Teach(BuildingHandler):
     @tornado.web.authenticated
     def get(self):
         self.check_whether_finish_truename_and_number()
-        user = self.get_current_user()
+        user = self.current_user
         truename = user.truename
         number = user.number
         courses = (course_services.get_stu_select_by_name_and_number(truename,
@@ -126,7 +125,7 @@ class ClassMate(Controller):
     @tornado.web.authenticated
     def get(self, classid):
         self.check_whether_finish_truename_and_number()
-        user = self.get_current_user()
+        user = self.current_user
         username = user.username
         classes = course_services.find(classid)
         classinfor = []
@@ -164,7 +163,7 @@ class GetClassComment(Controller):
     def get(self, classid):
         self.check_whether_finish_truename_and_number()
 
-        user = self.get_current_user()
+        user = self.current_user
 
         username = user.username
         comments = course_services.find_by_classid(classid)
@@ -194,7 +193,7 @@ class NewClassComment(Controller):
         classid = self.get_argument('classid', None)
         content = self.get_argument('comment', None)
 
-        user = self.get_current_user()
+        user = self.current_user
 
         success = True
         messages = []
@@ -291,23 +290,22 @@ class Rent(BuildingHandler):
                     rentType=build_config.RENT_TYPE)
 
     @tornado.web.authenticated
-    def post(self, id):
+    def post(self, shop_id):
         self.check_whether_finish_truename_and_number()
-        user = self.get_current_user().as_array()
-        userid = user['id']
-        user_shop = ShopModel.Shop.getCurrentUserShop(userid)
+        user = self.current_user
+        user_id = user.id
+        user_shop = building_services.get_shop_by_user(user_id)
         if user_shop:
             self.finish(json_encode({'success': False,
                                      'messages': ["您只能申请一次店铺。"]}))
         else:
-            shopid = id
-            shopname = self.get_argument('shopName', None)
-            shoptype = self.get_argument('type', None)
-            shopdescr = self.get_argument('descr', None)
+            shop_name = self.get_argument('shopName', None)
+            shop_type = self.get_argument('type', None)
+            shop_descr = self.get_argument('descr', None)
             success = True
             messages = []
 
-            if not shopid:
+            if not shop_id:
                 messages.append('该店铺不能申请')
 
             if not shopname:
@@ -316,24 +314,22 @@ class Rent(BuildingHandler):
             if not shoptype:
                 messages.append('请选择店铺类型')
 
-            if not shopdescr:
+            if not shop_descr:
                 messages.append('请输入店铺介绍')
 
-            if not special.BeingRent.find(shopid):
+            if not building_services.find_special(shop_id, 'rent'):
                 messages.append('该店铺不能申请')
 
             if messages:
                 success = False
 
             if success:
-                shop = special.BeingRent()
-                shop.initDB(self.db)
-                shop.createShop(shopid)
-                shop.title = shopname
-                shop.ownerid = userid
-                shop.descr = shopdescr
-                shop.special = shoptype
-                shop.save()
+                shop = building_services.find(shop_id)
+                shop.title = shop_name
+                shop.ownerid = user_id
+                shop.descr = shop_descr
+                shop.special = shop_type
+                building_services.save_building(shop)
 
             self.finish(json_encode({'success': success,
                                      'messages': messages}))
@@ -343,11 +339,11 @@ class Rent(BuildingHandler):
 class Shop(BuildingHandler):
     @tornado.web.authenticated
     def get(self, type, id):
-        user = self.get_current_user()
+        user = self.current_user
         if (type == 'private'):
             shop = building_services.find(id)
             if not shop:
-                raise httperror(404, '该店铺不存在')
+                raise tornado.web.HTTPError(404, '该店铺不存在')
             articles = article_services.find_by_shopid(id)
             self.render("buildings/shop/private.html",
                         user=user, shop=shop, articles=articles)
@@ -357,18 +353,18 @@ class Shop(BuildingHandler):
 
     @tornado.web.authenticated
     def post(self, id):
-        raise httperror(404)
+        raise tornado.web.HTTPError(404)
 
 
 @route(r"/shop/edit")
 class EditShop(BuildingHandler):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(404)
+        raise tornado.web.HTTPError(404)
 
     @tornado.web.authenticated
     def post(self):
-        user = self.get_current_user()
+        user = self.current_user
         shopid = self.get_argument('shopid', None)
         title = self.get_argument('shopName', None)
         descr = self.get_argument('descr', None)
@@ -411,12 +407,12 @@ class EditShop(BuildingHandler):
 class NewPrivateArticle(BuildingHandler):
     @tornado.web.authenticated
     def get(self, id):
-        raise httperror(404)
+        raise tornado.web.HTTPError(404)
 
     @tornado.web.authenticated
     def post(self, id):
         shop = building_services.find(id)
-        user = self.get_current_user()
+        user = self.current_user
         title = self.get_argument('title', None)
         content = self.get_argument('content', None)
         success = True
@@ -449,11 +445,11 @@ class NewPrivateArticle(BuildingHandler):
 class DelPrivateArticle(BuildingHandler):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(405)
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self):
-        user = self.get_current_user()
+        user = self.current_user
         shopid = self.get_argument('shopid')
         articleid = self.get_argument('articleid')
 
