@@ -157,14 +157,14 @@ class MyHome(Controller):
 class Profile(Controller):
     @tornado.web.authenticated
     def get(self):
-        current_user = self.get_current_user()
+        current_user = self.current_user
         self.render('user/profile.html', user=current_user)
 
     @tornado.web.authenticated
     def post(self):
         message = []
 
-        user = self.get_current_user()
+        user = self.current_user
 
         nickname = self.get_argument('nickname', None)
         gender = self.get_argument('gender', None)
@@ -197,7 +197,7 @@ class Profile(Controller):
             message.append('性别不能为空')
 
         if success:
-            current_user = self.get_current_user()
+            current_user = self.current_user
             current_user.nickname = nickname
             current_user.gender = gender
             current_user.truename = truename
@@ -213,14 +213,14 @@ class Profile(Controller):
 @route(r'/user/userinfor/get/([0-9]+)')
 class UserInfor(Controller):
     @tornado.web.authenticated
-    def get(self, userid):
-        user = self.get_current_user().as_array()
-        myid = user['id']
-        mate = model.User.get_user_by_id(userid)
-        friended = model.RelationShip.check_friended(myid, mate['id'])
-        self.finish(json_encode({'id': mate['id'],
-                                 'nickname': mate['nickname'],
-                                 'college': mate['college'],
+    def get(self, user_id):
+        current_user = self.current_user
+        my_id = current_user.id
+        mate = user_services.find(user_id)
+        friended = relationship_services.is_each_friend(my_id, mate.id)
+        self.finish(json_encode({'id': mate.id,
+                                 'nickname': mate.nickname,
+                                 'college': mate.college,
                                  'friended': friended}))
 
     @tornado.web.authenticated
@@ -244,7 +244,7 @@ class Friends(Controller):
 
     @tornado.web.authenticated
     def get(self):
-        current_user = self.get_current_user()
+        current_user = self.current_user
         user_id = current_user.id
         my_friends = relationship_services.get_focus_list(user_id)
         focus_me = relationship_services.get_being_focused_list(user_id)

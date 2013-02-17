@@ -55,3 +55,14 @@ def update_building(building):
             query_building.descr = building.descr
             session.commit()
             return True
+
+
+def get_shop_by_user(user_id):
+    if user_id is None:
+        return None
+    else:
+        this_query = query.filter_by(ownerid=user_id)
+        if this_query.count() > 0:
+            return this_query.first()
+        else:
+            return None

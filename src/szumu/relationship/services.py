@@ -97,3 +97,15 @@ def remove_relationship(relationship):
         session.delete(relationship)
         session.commit()
         return True
+
+
+def get_relationship(my_id, other_id, relation):
+    if not my_id or not other_id or not relation:
+        return None
+    else:
+        this_query = (query.filter_by(fromid=my_id).filter_by(toid=other_id)
+                           .filter_by(relationship=relation))
+        if this_query.count() > 0:
+            return this_query.first()
+        else:
+            return None

@@ -4,48 +4,47 @@ import time
 
 import tornado.web
 
-import szumu.web
-from szumu.user import model
+from szumu.web import Controller
 from szumu.base import route
+from szumu.relationship.model import RelationShip
+from szumu.relationship import services as relationship_services
 
 
 @route(r"/user/relation/friend/new/([0-9]+)")
-class NewRelationship(szumu.web.Controller):
+class NewRelationship(Controller):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def put(self, friendid):
-        user = self.get_current_user()
-        user = user.as_array()
-        userid = user['id']
-        relation = model.RelationShip(userid, friendid,
-                                      model.RelationShip.FOCUS)
-        relation.save()
+        user = self.current_user
+        userid = user.id
+        relation = RelationShip(userid, friendid, RelationShip.FOCUS)
+        relationship_services.save_relationship(relation)
         self.finish(json_encode({'success': True}))
 
 
 @route(r"/user/relation/friend/remove/([0-9]+)")
-class RemoveRelationship(szumu.web.Controller):
+class RemoveRelationship(Controller):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self):
-        raise httperror(404, 'Not Found')
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
-    def put(self, friendid):
-        user = self.get_current_user()
-        user = user.as_array()
-        userid = user['id']
-        relation = model.RelationShip(userid, friendid,
-                                      model.RelationShip.FOCUS)
-        relation.remove()
+    def put(self, friend_id):
+        user = self.current_user
+        user_id = user.id
+        relation = relationship_services.get_relationship(user_id, friend_id,
+                                                          RelationShip.FOCUS)
+        if relation:
+            remove_relationship(relation)
         self.finish(json_encode({'success': True}))

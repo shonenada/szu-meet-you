@@ -26,21 +26,21 @@ def json_encode(o):
 
 class Controller(tornado.web.RequestHandler):
 
-    def get_current_user(self, user_id=None):
+    @property
+    def current_user(self):
+        user_id = self.get_secure_cookie('userinfor')
         if not user_id:
-            user_id = self.get_secure_cookie('userinfor')
-        if not user_id or user_id is None:
             return None
-        user = find(user_id)
-        return user
+        current_user = find(user_id)
+        return current_user
 
     def check_whether_logged(self):
-        user = self.get_current_user()
+        user = self.current_user
         if not user is None:
             self.redirect('/')
 
     def check_whether_finish_truename_and_number(self):
-        user = self.get_current_user()
+        user = self.current_user
         if not user:
             raise tornado.web.HTTPError(403)
         truename = user.truename

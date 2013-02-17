@@ -16,7 +16,7 @@ class CheckMsg(Controller):
 
     @tornado.web.authenticated
     def get(self):
-        user = self.get_current_user()
+        user = self.current_user
         userid = user.id
         have_new_msg = msg_services.check_new_msg(userid)
         if have_new_msg:
@@ -39,7 +39,7 @@ class GetMsg(Controller):
     @tornado.web.authenticated
     def get(self, type):
         pageid = self.get_argument('page', 1)
-        user = self.get_current_user()
+        user = self.current_user
         userid = user.id
         if (type == 'send'):
             msgs = msg_services.get_ones_send_msg(userid)
@@ -77,7 +77,7 @@ class DelMsg(Controller):
             self.finish(json_encode({'success': False,
                                      'message': '您未选择需删除的私信'}))
 
-        user = self.get_current_user()
+        user = self.current_user
         userid = user.id
 
         if kind == 'send':
@@ -114,7 +114,7 @@ class SendMsg(Controller):
             self.finish(json_encode({'success': False,
                                      'message': '请输入回复的内容'}))
 
-        user = self.get_current_user()
+        user = self.current_user
         user = user.as_array()
         userid = user['id']
         sendmsg = model.Message(userid, toid, content)
@@ -146,7 +146,7 @@ class ReMsg(Controller):
                                      'message': '您所回复的私信不存在'}))
 
         toid = to_msg.fromid
-        user = self.get_current_user()
+        user = self.current_user
         userid = user.id
         remsg = Message(userid, toid, content)
         msg_services.save_msg(remsg)
