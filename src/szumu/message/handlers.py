@@ -11,7 +11,7 @@ from szumu.message import services as msg_services
 from szumu.base import route
 
 
-@route("/c/msg/check")
+@route("/user/msg/check")
 class CheckMsg(Controller):
 
     @tornado.web.authenticated

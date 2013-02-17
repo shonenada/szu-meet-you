@@ -1,7 +1,7 @@
 $(function(){
 	$('#reg-form').submit(function(){
 		$.ajax({
-			url: '/auth/reg',
+			url: '/signup',
 			type: 'post',
 			dataType: 'json',
 			data: $(this).serialize(),

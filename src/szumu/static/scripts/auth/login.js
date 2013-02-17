@@ -1,7 +1,7 @@
 $(function(){
 	$('#login-form').submit(function(){
 		$.ajax({
-			url: '/auth/login',
+			url: '/signin',
 			type: 'post',
 			dataType: 'json',
 			data: $(this).serialize(),
