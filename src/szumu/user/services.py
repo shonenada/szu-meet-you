@@ -132,3 +132,10 @@ def get_id_by_username(username):
             return query_user.first().id
         else:
             return None
+
+
+def get_user_list(page=1, pagesize=20):
+    offset = (page - 1) * pagesize
+    user_list = this_query = query.offset(offset).limit(pagesize).all()
+    return user_list
+    

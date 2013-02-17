@@ -232,11 +232,14 @@ class UserInfor(Controller):
 class Resident(Controller):
     @tornado.web.authenticated
     def get(self):
-        self.render('user/resident.html')
+        page = self.get_argument('page', 1)
+        user_list = user_services.get_user_list(int(page))
+        # 瀑布流显示
+        # self.render('user/resident.html')
 
     @tornado.web.authenticated
     def post(self):
-        pass
+        raise tornado.web.HTTPError(405)
 
 
 @route('/user/friends')
