@@ -9,6 +9,7 @@ from szumu.web import json_encode
 from szumu.base import route
 from szumu.user.model import User
 from szumu.user import services as user_services
+from szumu.relationship import services as relationship_services
 
 
 @route("/signup")
@@ -236,3 +237,20 @@ class Resident(Controller):
     @tornado.web.authenticated
     def post(self):
         pass
+
+
+@route('/user/friends')
+class Friends(Controller):
+
+    @tornado.web.authenticated
+    def get(self):
+        current_user = self.get_current_user()
+        user_id = current_user.id
+        my_friends = relationship_services.get_focus_list(user_id)
+        focus_me = relationship_services.get_being_focused_list(user_id)
+        my_ignored = relationship_services.get_ignore_list(user_id)
+        self.render('user/friends.html', myfriends=my_friends,
+                    focusme=focus_me, myignored=my_ignored)
+
+    def post(self):
+        raise tornado.web.HTTPError(405)

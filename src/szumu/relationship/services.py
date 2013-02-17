@@ -45,7 +45,7 @@ def get_being_ignored_list(user_id):
         return ignored_list
 
 
-def get_friends_list(user_id):
+def get_each_friend_list(user_id):
     focus_list = get_focus_list(user_id)
     focused_list = get_being_focused_list(user_id)
     focused_id_list = []
