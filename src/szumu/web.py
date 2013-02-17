@@ -46,6 +46,6 @@ class Controller(tornado.web.RequestHandler):
         truename = user.truename
         number = user.number
         if not truename:
-            raise httperror(403, 'Please input your truename')
+            raise tornado.web.HTTPError(403, 'Please input your truename')
         if not number:
-            raise httperror(403, 'Please input your number')
+            raise tornado.web.HTTPError(403, 'Please input your number')

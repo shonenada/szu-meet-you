@@ -343,7 +343,7 @@ class Shop(BuildingHandler):
         if (type == 'private'):
             shop = building_services.find(id)
             if not shop:
-                raise httperror(404, '该店铺不存在')
+                raise tornado.web.HTTPError(404, '该店铺不存在')
             articles = article_services.find_by_shopid(id)
             self.render("buildings/shop/private.html",
                         user=user, shop=shop, articles=articles)
@@ -353,14 +353,14 @@ class Shop(BuildingHandler):
 
     @tornado.web.authenticated
     def post(self, id):
-        raise httperror(404)
+        raise tornado.web.HTTPError(404)
 
 
 @route(r"/shop/edit")
 class EditShop(BuildingHandler):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(404)
+        raise tornado.web.HTTPError(404)
 
     @tornado.web.authenticated
     def post(self):
@@ -407,7 +407,7 @@ class EditShop(BuildingHandler):
 class NewPrivateArticle(BuildingHandler):
     @tornado.web.authenticated
     def get(self, id):
-        raise httperror(404)
+        raise tornado.web.HTTPError(404)
 
     @tornado.web.authenticated
     def post(self, id):
@@ -445,7 +445,7 @@ class NewPrivateArticle(BuildingHandler):
 class DelPrivateArticle(BuildingHandler):
     @tornado.web.authenticated
     def get(self):
-        raise httperror(405)
+        raise tornado.web.HTTPError(405)
 
     @tornado.web.authenticated
     def post(self):
