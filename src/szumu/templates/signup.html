@@ -1,4 +1,4 @@
-{% extends "../global.html" %}
+{% extends "global.html" %}
 {% block htmlhead %}
 <script type="text/javascript" src="{{ static_url("scripts/auth/reg.js") }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ static_url("styles/auth/auth.css") }}" />
@@ -43,8 +43,8 @@
 			<label class="control-label" for="inputGender">性别</label>
 			<div class="controls">
 				<select name="gender" id="inputGender">
-					<option value="1" >男</option>
-					<option value="0" >女</option>
+					<option value="{{ MALE_VALUE }}" >男</option>
+					<option value="{{ FEMALE_VALUE }}" >女</option>
 				</select>
 				<span class="help-inline">* 您的性别</span>
 			</div>

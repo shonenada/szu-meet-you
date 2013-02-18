@@ -19,6 +19,9 @@ class User(object):
 
     SALT = "WAIT_TO_MODIFY"
 
+    GENDER_MALE = 1
+    GENDER_FEMALE = 0
+
     def __init__(self, username, password, nickname):
         self.username = username
         self.hash_password(password)

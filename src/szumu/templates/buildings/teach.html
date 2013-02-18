@@ -30,8 +30,8 @@
 							<ul>
 								<a href="#id:1" class="roomsite-btn"><li>教学楼介绍</li></a>
 								{% if not classes == None %}
-								{% for x in classes %}
-								<a href="#classid:{{x['cid']}}" class="roomsite-btn teach-course"><li>{{x['classname']}}</li></a>
+								{% for c in classes %}
+								<a href="#classid:{{c.cid}}" class="roomsite-btn teach-course"><li>{{c.classname}}</li></a>
 								{% end %}
 								{% end %}
 							</ul>
@@ -42,15 +42,15 @@
 							<p>深大觅友社区教学楼成立于2012年8月27日21点33分。<br /></p>
 							<p>深大觅友社区教学楼负责寻找与你拥有相同课程的同学，并提供交友的平台。</p>
 							</div>
-							{% for x in classes %}
-							<div class="roomsite-block-content-{{x['cid']}} roomsite-block-content beautiScoll">
-							<h4>{{x['classname']}}（{{x['classteacher']}}）</h4>
+							{% for c in classes %}
+							<div class="roomsite-block-content-{{c.cid}} roomsite-block-content beautiScoll">
+							<h4>{{c.classname}}（{{c.classteacher}}）</h4>
 							<div style="text-indent:0em;padding-left:4em;">
-								{% if x['college'] %}开课单位：<code>{{college_no[int(x['college'])]}}</code>&nbsp;{%end%}
-								{% if x['mark'] and x['sjd'] %}学分类型：<code>{{x['mark']}} {{x['sjd']}}</code>&nbsp;{%end%}
-								{% if x['checktype'] %}考核方式：<code>{{x['checktype']}}</code>&nbsp;{%end%}
+								{% if c.college'] %}开课单位：<code>{{college_no[int(c.college)]}}</code>&nbsp;{%end%}
+								{% if c.mark'] and c.sjd %}学分类型：<code>{{c.mark}} {{c.sjd}}</code>&nbsp;{%end%}
+								{% if c.checktype'] %}考核方式：<code>{{c.checktype}}</code>&nbsp;{%end%}
 							<br />
-								{% if x['classroom'] %}课时教室：<code>{{x['classroom']}}</code>&nbsp;{%end%}
+								{% if c.classroom %}课时教室：<code>{{c.classroom}}</code>&nbsp;{%end%}
                             </div>
                             <p>
 					        <div id="classinfor-{{x['cid']}}" style="text-indent:0em;padding-left:2em;">

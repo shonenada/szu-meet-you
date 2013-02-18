@@ -108,7 +108,7 @@ class Teach(BuildingHandler):
         courses = (course_services.get_stu_select_by_name_and_number(truename,
                                                                      number))
         classes = []
-        if not courses is None:
+        if courses:
             for course in courses:
                 classes.append(course_services.find(course.cid))
 
@@ -140,13 +140,7 @@ class ClassMate(Controller):
                                                              username)
             if (checked_name and checked_number):
                 mate = user_services.get_user_by_name_and_number(name, number)
-                picurl = md5("AvatarUrl:"+str(mate.id)).hexdigest()
-                file_path = '/static/upfiles/avatar/' + picurl + '.png'
-                if not os.path.isfile(file_path):
-                    if mate['gender'] == 1:
-                        picurl = 'male_big'
-                    else:
-                        picurl = 'female_big'
+                picurl = user_services.get_user_avatar(mate.id)
                 classinfor.append({'id': mate.id,
                                    'nickname': mate.nickname,
                                    'pic': picurl})

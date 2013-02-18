@@ -8,8 +8,9 @@ from szumu.web import Controller
 from szumu.web import json_encode
 from szumu.base import route
 from szumu.user.model import User
+from szumu.relation.model import Relation
 from szumu.user import services as user_services
-from szumu.relationship import services as relationship_services
+from szumu.relation import services as relation_services
 
 
 @route("/signup")
@@ -17,8 +18,8 @@ class SignUp(Controller):
 
     def get(self):
         self.check_whether_logged()
-
-        self.render('auth/reg.html')
+        self.render('signup.html', MALE_VALUE=User.GENDER_MALE,
+                    FEMALE_VALUE=User.GENDER_FEMALE)
 
     def post(self):
         self.check_whether_logged()
@@ -77,7 +78,7 @@ class SignIn(Controller):
         username = self.get_secure_cookie('username')
         if not username:
             username = 'example@example.com'
-        self.render('auth/login.html', username=username)
+        self.render('signin.html', username=username)
 
     def post(self):
         self.check_whether_logged()
@@ -158,7 +159,9 @@ class Profile(Controller):
     @tornado.web.authenticated
     def get(self):
         current_user = self.current_user
-        self.render('user/profile.html', user=current_user)
+        self.render('user/profile.html', user=current_user,
+                    MALE_VALUE=User.GENDER_MALE,
+                    FEMALE_VALUE=User.GENDER_FEMALE)
 
     @tornado.web.authenticated
     def post(self):
@@ -217,7 +220,7 @@ class UserInfor(Controller):
         current_user = self.current_user
         my_id = current_user.id
         mate = user_services.find(user_id)
-        friended = relationship_services.is_each_friend(my_id, mate.id)
+        friended = relation_services.is_each_friend(my_id, mate.id)
         self.finish(json_encode({'id': mate.id,
                                  'nickname': mate.nickname,
                                  'college': mate.college,
@@ -233,9 +236,19 @@ class Resident(Controller):
     @tornado.web.authenticated
     def get(self):
         page = self.get_argument('page', 1)
+
+        current_user = self.current_user
+
         user_list = user_services.get_user_list(int(page))
-        # 瀑布流显示
-        # self.render('user/resident.html')
+
+        user_services.with_avatar(user_list)
+        relation_services.with_relation(current_user.id, user_list)
+
+        FOCUS_VALUE = Relation.FOCUS
+        IGNORE_VALUE = Relation.IGNORE
+
+        self.render('resident.html', user_list=user_list,
+                    FOCUS_VALUE=FOCUS_VALUE, IGNORE_VALUE=IGNORE_VALUE)
 
     @tornado.web.authenticated
     def post(self):
@@ -249,9 +262,13 @@ class Friends(Controller):
     def get(self):
         current_user = self.current_user
         user_id = current_user.id
-        my_friends = relationship_services.get_focus_list(user_id)
-        focus_me = relationship_services.get_being_focused_list(user_id)
-        my_ignored = relationship_services.get_ignore_list(user_id)
+
+        my_friends = relation_services.get_focus_list(user_id)
+        my_ignored = relation_services.get_ignore_list(user_id)
+        focus_me = relation_services.get_being_focused_list(user_id)
+        
+        user_services.with_avatar(my_friends)
+
         self.render('user/friends.html', myfriends=my_friends,
                     focusme=focus_me, myignored=my_ignored)
 

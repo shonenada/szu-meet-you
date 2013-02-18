@@ -40,8 +40,8 @@ $(function() {
 			<label class="control-label" for="inputGender">性别</label>
 			<div class="controls">
 				<select name="gender" id="inputGender">
-					<option value="1" {% if user.gender == 1 %}selected="selected"{%end%}>男</option>
-					<option value="0" {% if user.gender == 0 %}selected="selected"{%end%}>女</option>
+					<option value="{{ MALE_VALUE }}" {% if user.gender == MALE_VALUE %}selected="selected"{%end%}>男</option>
+					<option value="{{ FEMALE_VALUE }}" {% if user.gender == FEMALE_VALUE %}selected="selected"{%end%}>女</option>
 				</select>
 				<span class="help-inline">* 您的性别</span>
 			</div>
