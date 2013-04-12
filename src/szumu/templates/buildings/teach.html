@@ -46,9 +46,9 @@
 							<div class="roomsite-block-content-{{c.cid}} roomsite-block-content beautiScoll">
 							<h4>{{c.classname}}（{{c.classteacher}}）</h4>
 							<div style="text-indent:0em;padding-left:4em;">
-								{% if c.college'] %}开课单位：<code>{{college_no[int(c.college)]}}</code>&nbsp;{%end%}
-								{% if c.mark'] and c.sjd %}学分类型：<code>{{c.mark}} {{c.sjd}}</code>&nbsp;{%end%}
-								{% if c.checktype'] %}考核方式：<code>{{c.checktype}}</code>&nbsp;{%end%}
+								{% if c.college %}开课单位：<code>{{college_no[int(c.college)]}}</code>&nbsp;{%end%}
+								{% if c.mark and c.sjd %}学分类型：<code>{{c.mark}} {{c.sjd}}</code>&nbsp;{%end%}
+								{% if c.checktype %}考核方式：<code>{{c.checktype}}</code>&nbsp;{%end%}
 							<br />
 								{% if c.classroom %}课时教室：<code>{{c.classroom}}</code>&nbsp;{%end%}
                             </div>
