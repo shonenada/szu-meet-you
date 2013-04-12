@@ -38,7 +38,7 @@ metadata = DbMaster.metadata
 
 def import_tables():
     from szumu.user.model import user_table
-    from szumu.relationship.model import relationship_table
+    from szumu.relation.model import relation_table
     from szumu.message.model import message_table
     from szumu.course.model import comment_table, course_table, stuselect_table
     from szumu.map.model import map_table

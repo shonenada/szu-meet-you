@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+body{
+	overflow:auto;
+}
+#main{
+	width: 60%;
+	margin:0 auto;
+	margin-top: 80px;
+	margin-bottom: 40px;
+	border-radius: 5px;
+	border:1px solid #eee;
+	background:rgba(255,255,255,0.8);
+	padding:20px;
+	-webkit-box-shadow:1px 1px 5px #4f4f4f;
+	-moz-box-shadow:1px 1px 5px #4f4f4f;
+	box-shadow:1px 1px 5px #4f4f4f;
+}
+

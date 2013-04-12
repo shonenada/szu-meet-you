@@ -1,4 +1,7 @@
-﻿import tornado
+﻿import os
+from hashlib import md5
+
+import tornado
 from sqlalchemy.orm import Session
 
 from szumu.user.model import User
@@ -138,4 +141,32 @@ def get_user_list(page=1, pagesize=20):
     offset = (page - 1) * pagesize
     user_list = this_query = query.offset(offset).limit(pagesize).all()
     return user_list
-    
+
+
+def get_user_avatar(user_id, avatar_folder='/static/upfiles/avatar/'):
+    if user_id is None:
+        return None
+    else:
+        query_user = find(user_id)
+        picurl = md5("AvatarUrl:" + str(user_id)).hexdigest()
+        pic_path = avatar_folder + picurl + '.png'
+        if not os.path.isfile(pic_path):
+            if query_user.gender == User.GENDER_MALE:
+                picurl = 'male_big'
+            else:
+                picurl = 'female_big'
+        pic_path = avatar_folder + picurl + '.png'
+        return pic_path
+
+
+def add_avatar(user):
+    if user is None or not isinstance(user, User):
+        return False
+    pic_url = get_user_avatar(user.id)
+    user.avatar = pic_url
+    return True
+
+
+def with_avatar(user_list):
+    for user in user_list:
+        add_avatar(user)

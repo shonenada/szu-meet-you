@@ -25,7 +25,7 @@ $(function(){
 					        >\
 					        <img \
 					        class='avatar-small' \
-					        src='/static/upfiles/avatar/" + response[i]['pic'] + ".png' \
+					        src='" + response[i]['pic'] + "' \
 					        />\
 					        "+response[i]['nickname']+"\
 					        </a>\

@@ -1,0 +1,25 @@
+{% extends "global.html" %}
+{% block htmlhead %}
+<link rel="stylesheet" type="text/css" href="{{ static_url("styles/resident.css") }}" />
+
+<!--[if !gt IE 9]>
+<style>
+	#main{
+		background:#fff;
+	}
+</style>
+<![endif]-->
+{% end %}
+{% block content %}
+<div id="main">
+    {% for user in user_list %}
+	<div class="resident-box">
+        <img src="{{user.avatar}}" class="avatar"/>
+        <div class="nickname"><a href="/user/{{user.id}}">{{ user.nickname }}</a></div>
+        <div class="relation">{% if user.relation == FOCUS_VALUE %}已关注{% elif user.relation == IGNORE_VALUE %}已拉黑{% else %}<a href="#focus-{{user.id}}" id="focus-{{user.id}}">关注</a>{% end %}</div>
+    </div>
+    {% end %}
+</div>
+{% end %}
+
+{% block right %}{% end %}
