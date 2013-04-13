@@ -48,8 +48,11 @@ def read_temp_html():
     for root, dirs, files in os.walk("temp/"):
         for f in files:
             html_file = open("temp/" + f, 'r')
-            analyse(html_file.read(), f.replace('.html', ''))
-
+            html = html_file.read()
+            if len(html) > 1080:
+                analyse(html_file.read(), f.replace('.html', ''))
+            else:
+                log_file.write(f + 'is a invalid file!')
 
 
 def analyse(html, classid):
