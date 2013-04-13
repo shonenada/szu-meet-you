@@ -14,6 +14,8 @@ from models import StuSelect, Course
 reload(sys)
 sys.setdefaultencoding("utf8")
 
+log_file = open("stu_select.log", "a")
+
 session = Session()
 cookie_url = "http://192.168.2.229/newkc/akcjj0.asp?xqh=20122"
 headers = {}
@@ -46,7 +48,7 @@ def analyse(html, classid):
         if tr:
             tr = str(tr).replace('\n', '').replace(' ', '')
             info = tr_pattern.findall(tr)[0]
-            print "Getting", classid, info[0]
+            log_file.write("Getting" + str(classid) + str(info[0]) +'\n')
             save_in_database(info, classid)
 
 
