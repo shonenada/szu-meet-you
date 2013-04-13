@@ -1,9 +1,11 @@
 #-*- coding: utf-8 -*-
+
 import re
+import os
 import json
 import urllib2
-from urllib import urlencode
 import sys
+from urllib import urlencode
 
 from sqlalchemy.orm import Session
 from bs4 import BeautifulSoup
@@ -36,6 +38,20 @@ def get_infor(classid):
     return html
 
 
+def save_html(html, classid):
+    html_file = open("temp/" + str(classid) + ".html", 'w')
+    html_file.write(html)
+    print "Saved", "temp/" + str(classid) + ".html"
+
+
+def read_temp_html():
+    for root, dirs, files in os.walk("temp/"):
+        for f in files:
+            html_file = open("temp/" + f, 'r')
+            analyse(html_file.read(), f.replace('.html', ''))
+
+
+
 def analyse(html, classid):
     soup = BeautifulSoup(html)
     first_table = soup.table
@@ -48,7 +64,8 @@ def analyse(html, classid):
         if tr:
             tr = str(tr).replace('\n', '').replace(' ', '')
             info = tr_pattern.findall(tr)[0]
-            log_file.write("Getting" + str(classid) + str(info[0]) +'\n')
+            log_file.write("Getting" +  " " + str(classid) + " " + str(info[0]) + '\n')
+            print("Getting" +  " " + str(classid) + " " + str(info[0]) + '\n')
             save_in_database(info, classid)
 
 
@@ -61,14 +78,19 @@ def save_in_database(info, classid):
     session.commit()
 
 
-def run():
+def fetch_html():
     setup_cookie()
     courses = session.query(Course).all()
     for course in courses:
         c_no = course.course_no
         html = get_infor(c_no)
-        analyse(html, c_no)
+        save_html(html, c_no)
 
+
+def run():
+    fetch_html()
+    read_temp_html()
+    
 
 if __name__ == "__main__":
     run()
