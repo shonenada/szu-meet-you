@@ -39,20 +39,20 @@ def get_infor(classid):
 
 
 def save_html(html, classid):
-    html_file = open("temp/" + str(classid) + ".html", 'w')
+    html_file = open("temp/selections/" + str(classid) + ".html", 'w')
     html_file.write(html)
-    print "Saved", "temp/" + str(classid) + ".html"
+    print "Saved", "temp/selections/" + str(classid) + ".html"
 
 
 def read_temp_html():
-    for root, dirs, files in os.walk("temp/"):
+    for root, dirs, files in os.walk("temp/selections/"):
         for f in files:
-            html_file = open("temp/" + f, 'r')
+            html_file = open("temp/selections/" + f, 'r')
             html = html_file.read()
-            if len(html) > 1080:
-                analyse(html_file.read(), f.replace('.html', ''))
-            else:
-                log_file.write(f + 'is a invalid file!')
+            if len(html) > 1800:
+                analyse(html, f.replace('.html', ''))
+        #     else:
+        #         log_file.write(f + 'is a invalid file!')
 
 
 def analyse(html, classid):
@@ -68,7 +68,7 @@ def analyse(html, classid):
             tr = str(tr).replace('\n', '').replace(' ', '')
             info = tr_pattern.findall(tr)[0]
             log_file.write("Getting" +  " " + str(classid) + " " + str(info[0]) + '\n')
-            print("Getting" +  " " + str(classid) + " " + str(info[0]) + '\n')
+            print("Getting" +  " " + str(classid) + " " + str(info[0]))
             save_in_database(info, classid)
 
 
@@ -91,7 +91,7 @@ def fetch_html():
 
 
 def run():
-    fetch_html()
+    # fetch_html()
     read_temp_html()
     
 
