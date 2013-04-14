@@ -51,8 +51,8 @@ def read_temp_html():
             html = html_file.read()
             if len(html) > 1800:
                 analyse(html, f.replace('.html', ''))
-        #     else:
-        #         log_file.write(f + 'is a invalid file!')
+            else:
+                log_file.write(f + 'is a invalid file!')
 
 
 def analyse(html, classid):
@@ -78,7 +78,6 @@ def save_in_database(info, classid):
     new_stu.gender = info[2].decode('utf-8')
     new_stu.major = info[3].decode('utf-8')
     session.add(new_stu)
-    session.commit()
 
 
 def fetch_html():
@@ -91,8 +90,9 @@ def fetch_html():
 
 
 def run():
-    # fetch_html()
+    fetch_html()
     read_temp_html()
+    session.commit()
     
 
 if __name__ == "__main__":

@@ -61,12 +61,12 @@ def save_in_database(info_list, college):
         new_course.score_type = info[8].decode('utf-8')
         new_course.remark = info[9].decode('utf-8')
         session.add(new_course)
-        session.commit()
 
 
 def run():
     fetch_courses()
     analyse()
+    session.commit()
 
 
 if __name__ == "__main__":
