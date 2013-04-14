@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy import Table, Column, Integer, String, DateTime, Text
+from sqlalchemy import Table, Column, Integer, String, DateTime, Text, Float
 from sqlalchemy.orm import mapper
 
 
@@ -26,7 +26,7 @@ course_table = Table("courses", metadata,
                      Column('college', Integer),
                      Column('main_class', String(150)),
                      Column('teacher', String(150)),
-                     Column('score', String(5)),
+                     Column('credit', Float),
                      Column('how_to_check', String(15)),
                      Column('classroom', String(150)),
                      Column('class_week', String(10)),

@@ -44,7 +44,7 @@ def analyse():
             html = html_file.read()
             result = tr_pattern.findall(html)
             log_file.write("Saving " + f + "\n")
-            print "Saved", f
+            print "Saving", f
             save_in_database(result, college)
 
 
@@ -54,7 +54,7 @@ def save_in_database(info_list, college):
         new_course.main_class = info[2].decode('utf-8')
         new_course.teacher = info[3].decode('utf-8')
         new_course.college = college.decode('utf-8')
-        new_course.score = info[4].decode('utf-8')
+        new_course.credit = float(info[4].decode('utf-8'))
         new_course.how_to_check = info[5].decode('utf-8')
         new_course.classroom = info[6].decode('utf-8')
         new_course.class_week = info[7].decode('utf-8')
@@ -65,7 +65,7 @@ def save_in_database(info_list, college):
 
 
 def run():
-    # fetch_courses()
+    fetch_courses()
     analyse()
 
 
