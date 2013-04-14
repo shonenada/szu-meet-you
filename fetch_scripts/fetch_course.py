@@ -39,7 +39,7 @@ def analyse():
     tr_pattern = re.compile(r"<tr[\s\S]+?><td><input [\s\S]+?></td><td>([\d]+)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td><img [\s\S]+?></td><td>([\s\S]*?)</td><td>([\s\S]+?)</td><td>([\s\S]*?)</td><td>([\s\S]*?)</td></tr>")
     for root, dirs, files in os.walk("temp/courses/"):
         for f in files:
-            college = f.replace("r", "").replace(html_suffix, '')
+            college = f.replace("d", "").replace("l", "").replace(html_suffix, '')
             html_file = open("temp/courses/" + f, 'r')
             html = html_file.read()
             result = tr_pattern.findall(html)
@@ -65,7 +65,7 @@ def save_in_database(info_list, college):
 
 
 def run():
-    fetch_courses()
+    # fetch_courses()
     analyse()
 
 
