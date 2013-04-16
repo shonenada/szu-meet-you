@@ -41,7 +41,8 @@ def get_infor(classid):
 def save_html(html, classid):
     html_file = open("temp/selections/" + str(classid) + ".html", 'w')
     html_file.write(html)
-    print "Saved", "temp/selections/" + str(classid) + ".html"
+    log_file.write("Saved" + "temp/selections/" + str(classid) + ".html\n")
+    print "Saved temp/selections/" + str(classid) + ".html"
 
 
 def read_temp_html():
@@ -68,7 +69,7 @@ def analyse(html, classid):
             tr = str(tr).replace('\n', '').replace(' ', '')
             info = tr_pattern.findall(tr)[0]
             log_file.write("Getting" +  " " + str(classid) + " " + str(info[0]) + '\n')
-            print("Getting" +  " " + str(classid) + " " + str(info[0]))
+            print "Getting" +  " " + str(classid) + " " + str(info[0])
             save_in_database(info, classid)
 
 
@@ -89,11 +90,7 @@ def fetch_html():
         save_html(html, c_no)
 
 
-def run():
+def selection_analyse():
     fetch_html()
     read_temp_html()
     session.commit()
-    
-
-if __name__ == "__main__":
-    run()

@@ -3,7 +3,7 @@ from sqlalchemy import Table, Column, Integer, String, DateTime, Text, Float
 from sqlalchemy.orm import mapper
 
 
-engine = create_engine("sqlite:///course.sqlite")
+engine = create_engine("sqlite:///courses.sqlite")
 metadata = MetaData(engine)
 
 
@@ -19,6 +19,15 @@ class StuSelect(object):
         self.name = name
 
 
+class Timetable(object):
+    def __init__(self, course_id, week, day, hour, classroom):
+        self.course_id = course_id
+        self.week = week
+        self.day = day
+        self.hour = hour
+        self.classroom = classroom
+
+
 course_table = Table("courses", metadata,
                      Column('id', Integer, primary_key=True),
                      Column('course_no', String(15)),
@@ -28,9 +37,8 @@ course_table = Table("courses", metadata,
                      Column('teacher', String(150)),
                      Column('credit', Float),
                      Column('how_to_check', String(15)),
-                     Column('classroom', String(150)),
                      Column('class_week', String(10)),
-                     Column('score_type', String(8)),
+                     Column('credit_type', String(8)),
                      Column('remark', String(300))
                      )
 
@@ -43,9 +51,16 @@ select_table = Table('selects', metadata,
                      Column('major', String(50))
                      )
 
+timetable_table = Table('timetable', metadata,
+                        Column('id', Integer, primary_key=True),
+                        Column('course_id', String(15)),
+                        Column('week', Integer),
+                        Column('day', Integer),
+                        Column('hour', String(20)),
+                        Column('classroom', String(30))
+                        )
+
 
 mapper(Course, course_table)
 mapper(StuSelect, select_table)
-
-# if __name__ == "__main__":
-#     metadata.create_all()
+mapper(Timetable, timetable_table)
