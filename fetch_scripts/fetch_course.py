@@ -4,9 +4,7 @@ import os
 import urllib2
 import sys
 
-from sqlalchemy.orm import Session
-
-from models import Course, Timetable
+from models import Course, Timetable, session
 
 
 reload(sys)
@@ -14,13 +12,32 @@ sys.setdefaultencoding("utf8")
 
 log_file = open("fetch_course.log", "a")
 
-session = Session()
-
 base_url = "http://192.168.240.168/xuanke/coursehtm/"
 request_url = base_url + "dept20122.htm"
 html_suffix = "20122.htm"
 
-colleges = ['材料学院', '财会学院', '传播学院', '大学英语教学部', '电子科学与技术学院', '法学院', '高尔夫学院', '管理学院', '光电工程学院', '国际交流学院', '化学与化工学院', '机电与控制工程学院', '计算机与软件学院', '建筑与城市规划学院', '教务部()', '经济学院', '社会科学学院', '生命科学学院', '师范学院', '数学与计算科学学院', '体育部', '图书馆', '土木工程学院', '外国语学院', '文化产业研究院', '文学院', '武装部', '物理科学与技术学院', '信息工程学院', '学生部', '医学院', '艺术设计学院', '招生就业办公室', '中国经济特区研究中心']
+departments = ['材料学院', '财会学院', '传播学院', '大学英语教学部',
+               '电子科学与技术学院', '法学院', '高尔夫学院', '管理学院',
+               '光电工程学院', '国际交流学院', '化学与化工学院',
+               '机电与控制工程学院', '计算机与软件学院', '建筑与城市规划学院',
+               '教务部', '经济学院', '社会科学学院', '生命科学学院',
+               '师范学院', '数学与计算科学学院', '体育部', '图书馆',
+               '土木工程学院', '外国语学院', '文化产业研究院', '文学院',
+               '武装部', '物理科学与技术学院', '信息工程学院', '学生部',
+               '医学院', '艺术设计学院', '招生就业办公室',
+               '中国经济特区研究中心']
+college_no_in_school_no = {'01': '文学院', '02': '经济学院', '03': '法学院',
+                           '04': '管理学院', '05': '艺术设计学院',
+                           '06': '高尔夫球学院', '07': '外国语学院',
+                           '08': '传播学院', '09': '土木工程学院',
+                           '10': '建筑与城市规划学院',
+                           '11': '机电与控制工程学院', '12': '师范学院',
+                           '13': '信息工程学院', '14': '化学与化工学院',
+                           '15': '计算机与软件学院',
+                           '16': '电子科学与技术学院', '17': '光电工程学院',
+                           '18': '物理科学与技术学院',
+                           '19': '数学与计算科学学院', '20': '材料学院',
+                           '22': '医学院', '30': '留学生'}
 
 list_pattern = re.compile("([\S]+?)(\d+(?:,\d+){1,2})\(([\S].*)\)")
 special_pattern = re.compile("([\S]+?)(\d+:\d+-\d+:\d+)\((\S+?)\(\S+?\)\)")
@@ -33,14 +50,14 @@ week_dict = {u"周": 0, u"单": 1, u"双": 2}
 
 def read_url():
     key = 1;
-    for val in colleges:
+    for val in departments:
         url = base_url + "d" + str(key) + html_suffix
-        key = key + 1
         response = urllib2.urlopen(url)
         result = response.read().decode('gbk', 'ignore')
         log_file.write("Fetching from " + url + "\n")
         print "Fetching from " + url + "\n"
         analyse(result, key)
+        key = key + 1
 
 
 def analyse(html, college):
@@ -76,7 +93,8 @@ def save_in_database(info_list, college):
                 week = week_dict[special_result[0][0][0:1]]
                 hour = special_result[0][1]
                 classroom = special_result[0][2]
-            timetable = Timetable(info[0].decode('utf-8'), week, day, hour, classroom.decode('utf-8'))
+            timetable = Timetable(info[0].decode('utf-8'), week, day, hour,
+                                  classroom.decode('utf-8'))
             session.add(timetable)
         log_file.write("Saved\n")
         print "Saved"

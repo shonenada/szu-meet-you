@@ -7,10 +7,9 @@ import urllib2
 import sys
 from urllib import urlencode
 
-from sqlalchemy.orm import Session
 from bs4 import BeautifulSoup
 
-from models import StuSelect, Course
+from models import Selection, Course, session
 
 
 reload(sys)
@@ -18,9 +17,9 @@ sys.setdefaultencoding("utf8")
 
 log_file = open("stu_select.log", "a")
 
-session = Session()
 cookie_url = "http://192.168.2.229/newkc/akcjj0.asp?xqh=20122"
 headers = {}
+GENDER = {u'男': 1, u'女': 0}
 
 
 def setup_cookie():
@@ -43,6 +42,13 @@ def save_html(html, classid):
     html_file.write(html)
     log_file.write("Saved" + "temp/selections/" + str(classid) + ".html\n")
     print "Saved temp/selections/" + str(classid) + ".html"
+
+
+def read_html(html, classid):
+    if len(html) > 1800:
+        analyse(html, classid)
+    else:
+        log_file.write(str(classid) + ' is not a invalid file!')
 
 
 def read_temp_html():
@@ -74,9 +80,11 @@ def analyse(html, classid):
 
 
 def save_in_database(info, classid):
-    new_stu = StuSelect(classid, info[1].decode('utf-8'))
-    new_stu.uid = info[0].decode('utf-8')
-    new_stu.gender = info[2].decode('utf-8')
+    new_stu = Selection(classid, info[1].decode('utf-8'))
+    new_stu.entrance_year = info[0][2:4]
+    new_stu.college_no = info[0][4:6]
+    new_stu.stu_no = info[0]
+    new_stu.gender = GENDER[info[2].decode('utf-8')]
     new_stu.major = info[3].decode('utf-8')
     session.add(new_stu)
 
@@ -87,10 +95,10 @@ def fetch_html():
     for course in courses:
         c_no = course.course_no
         html = get_infor(c_no)
-        save_html(html, c_no)
+        read_html(html, c_no)
 
 
 def selection_analyse():
     fetch_html()
-    read_temp_html()
+    # read_temp_html()
     session.commit()
