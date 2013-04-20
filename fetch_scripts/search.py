@@ -12,9 +12,7 @@ if __name__ == "__main__":
 
     outfile = open("out.txt", "w")
 
-    # student_no = raw_input("student no: ")
-
-    student_no = 2011150073
+    student_no = raw_input("student no: ")
 
     user_selections = (session.query(Selection.course_no)
                       .filter_by(stu_no=student_no))
