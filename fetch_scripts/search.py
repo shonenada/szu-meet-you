@@ -12,7 +12,9 @@ if __name__ == "__main__":
 
     outfile = open("out.txt", "w")
 
-    student_no = raw_input("student no: ")
+    # student_no = raw_input("student no: ")
+
+    student_no = 2011150073
 
     user_selections = (session.query(Selection.course_no)
                       .filter_by(stu_no=student_no))
@@ -34,7 +36,7 @@ if __name__ == "__main__":
 
         for course in courses:
             print course[0],
-            outfile.write(course[0] + '\t')
+            outfile.write(course[0].encode('utf-8') + '\t')
         print "\n"
         outfile.write('\n')
 
