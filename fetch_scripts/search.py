@@ -15,7 +15,7 @@ if __name__ == "__main__":
     student_no = raw_input("student no: ")
 
     user_selections = (session.query(Selection.course_no)
-                      .filter_by(stu_no=student_no))
+                       .filter_by(stu_no=student_no))
 
     for user_selection in user_selections:
         c_no = user_selection.course_no

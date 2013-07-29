@@ -15,7 +15,7 @@ session = Session()
 class Course(Base):
 
     __tablename__ = 'courses'
-    
+
     id = Column('id', Integer, primary_key=True)
     course_no = Column('course_no', String(15))
     course_name = Column('course_name', String(150))

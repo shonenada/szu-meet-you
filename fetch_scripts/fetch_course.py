@@ -13,8 +13,8 @@ sys.setdefaultencoding("utf8")
 log_file = open("fetch_course.log", "a")
 
 base_url = "http://192.168.240.168/xuanke/coursehtm/"
-request_url = base_url + "dept20122.htm"
-html_suffix = "20122.htm"
+request_url = base_url + "dept20131.htm"
+html_suffix = "20131.htm"
 
 departments = ['材料学院', '财会学院', '传播学院', '大学英语教学部',
                '电子科学与技术学院', '法学院', '高尔夫学院', '管理学院',
@@ -42,7 +42,7 @@ college_no_in_school_no = {'01': '文学院', '02': '经济学院', '03': '法�
 list_pattern = re.compile("([\S]+?)(\d+(?:,\d+){1,2})\(([\S].*)\)")
 special_pattern = re.compile("([\S]+?)(\d+:\d+-\d+:\d+)\((\S+?)\(\S+?\)\)")
 get_tr_pattern = re.compile(r"<tr[\s\S]+?><td><input [\s\S]+?</tr>")
-tr_pattern = re.compile(r"<tr[\s\S]+?><td><input [\s\S]+?></td><td>([\d]+)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td><img [\s\S]+?></td><td>([\s\S]*?)</td><td>([\s\S]+?)</td><td>([\s\S]*?)</td><td>([\s\S]*?)</td></tr>")
+tr_pattern = re.compile(r"<tr[\s\S]+?><td><input [\s\S]+?></td><td>([\d]+)</td><td>(?:<a href[\s\S]+?>){0,1}([\s\S]+?)(?:</a>){0,1}</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td>([\s\S]+?)</td><td><img [\s\S]+?></td><td>([\s\S]*?)</td><td>([\s\S]+?)</td><td>([\s\S]*?)</td><td>([\s\S]*?)</td></tr>")
 
 day_dict = {u"一": 1, u"二": 2, u"三": 3, u"四": 4, u"五": 5}
 week_dict = {u"周": 0, u"单": 1, u"双": 2}
@@ -78,26 +78,26 @@ def save_in_database(info_list, college):
         new_course.class_week = info[7].decode('utf-8')
         new_course.credit_type = info[8].decode('utf-8')
         new_course.remark = info[9].decode('utf-8')
-
-        classrooms = info[6].split(';')
-        for classroom in classrooms:
-            regrex_result = list_pattern.findall(classroom)
-            special_result = special_pattern.findall(classroom)
-            if regrex_result:
-                day = day_dict[regrex_result[0][0][-1]]
-                week = week_dict[regrex_result[0][0][0:1]]
-                hour = regrex_result[0][1]
-                classroom = regrex_result[0][2]
-            if special_result:
-                day = day_dict[special_result[0][0][-1]]
-                week = week_dict[special_result[0][0][0:1]]
-                hour = special_result[0][1]
-                classroom = special_result[0][2]
-            timetable = Timetable(info[0].decode('utf-8'), week, day, hour,
-                                  classroom.decode('utf-8'))
-            session.add(timetable)
+        if not info[6] is None and info[6] != "":
+            classrooms = info[6].split(';')
+            for classroom in classrooms:
+                regrex_result = list_pattern.findall(classroom)
+                special_result = special_pattern.findall(classroom)
+                if regrex_result:
+                    day = day_dict[regrex_result[0][0][-1]]
+                    week = week_dict[regrex_result[0][0][0:1]]
+                    hour = regrex_result[0][1]
+                    classroom = regrex_result[0][2]
+                if special_result:
+                    day = day_dict[special_result[0][0][-1]]
+                    week = week_dict[special_result[0][0][0:1]]
+                    hour = special_result[0][1]
+                    classroom = special_result[0][2]
+                timetable = Timetable(info[0].decode('utf-8'), week, day, hour,
+                                      classroom.decode('utf-8'))
+                session.add(timetable)
         log_file.write("Saved\n")
-        print "Saved"
+        print "Saved" + info[0].encode("utf-8")
         session.add(new_course)
 
 

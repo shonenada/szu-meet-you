@@ -31,7 +31,8 @@ def setup_cookie():
 
 
 def get_infor(classid):
-    req = urllib2.Request("http://192.168.2.229/newkc/kcxkrs.asp?ykch=" + str(classid), headers=headers)
+    req = urllib2.Request("http://192.168.2.229/newkc/kcxkrs.asp?ykch=" +
+                          str(classid), headers=headers)
     r = urllib2.urlopen(req)
     html = r.read().decode('gbk', 'ignore')
     return html
@@ -74,8 +75,9 @@ def analyse(html, classid):
         if tr:
             tr = str(tr).replace('\n', '').replace(' ', '')
             info = tr_pattern.findall(tr)[0]
-            log_file.write("Getting" +  " " + str(classid) + " " + str(info[0]) + '\n')
-            print "Getting" +  " " + str(classid) + " " + str(info[0])
+            log_file.write("Getting" + " " + str(classid) + " " +
+                           str(info[0]) + '\n')
+            print "Getting" + " " + str(classid) + " " + str(info[0])
             save_in_database(info, classid)
 
 
